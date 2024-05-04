@@ -24,3 +24,4 @@ node_modules
 .env.production
 tmp/
 static/css/styles.css
+local.db
