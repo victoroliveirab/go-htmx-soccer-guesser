@@ -1,0 +1,14 @@
+{{ define "teams-index"}}
+<ul class="grid grid-cols-6">
+    {{ range . }}
+    <li class="flex flex-col p-4 items-center">
+        {{ if .LogoUrl }}
+        <img src="{{.LogoUrl}}" alt="" class="h-8 w-8" />
+        {{ else }}
+        <img src="/static/img/not_available.png" alt="" class="h-8 w-8" />
+        {{ end }}
+        <p>{{.Name}}</p>
+    </li>
+    {{ end }}
+</ul>
+{{ end }}

@@ -25,3 +25,4 @@ node_modules
 tmp/
 static/css/styles.css
 local.db
+.DS_Store
