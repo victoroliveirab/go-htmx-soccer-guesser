@@ -19,6 +19,18 @@ func RegisterTemplates() {
 			"views/base.html",
 		),
 	)
+	templates["signup.html"] = template.Must(
+		template.ParseFiles(
+			"views/signup.html",
+			"views/base.html",
+		),
+	)
+	templates["user.html"] = template.Must(
+		template.ParseFiles(
+			"views/user.html",
+			"views/base.html",
+		),
+	)
 }
 
 func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {

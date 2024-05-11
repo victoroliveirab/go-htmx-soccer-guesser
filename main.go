@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
@@ -29,6 +30,44 @@ func main() {
 
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 	mux.Handle("/favicon.ico", http.StripPrefix("/", fileServer))
+
+	mux.HandleFunc("GET /signup", func(w http.ResponseWriter, r *http.Request) {
+		lib.RenderTemplate(w, "signup.html", nil)
+	})
+
+	mux.HandleFunc("POST /users", func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseForm()
+		if err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+		username := r.FormValue("username")
+		email := r.FormValue("email")
+		password := r.FormValue("password")
+
+		id, err := models.CreateUser(lib.DbConnection, username, email, password)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		redirectUrl := "/users/" + strconv.FormatInt(id, 10)
+		http.Redirect(w, r, redirectUrl, http.StatusSeeOther)
+	})
+
+	mux.HandleFunc("GET /users/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		user, err := models.GetUserById(lib.DbConnection, id)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusNotFound)
+			return
+		}
+		lib.RenderTemplate(w, "user.html", user)
+	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
