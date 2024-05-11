@@ -1,4 +1,4 @@
-package lib
+package infra
 
 import (
 	"database/sql"
@@ -8,7 +8,7 @@ import (
 	_ "github.com/tursodatabase/go-libsql"
 )
 
-var DbConnection *sql.DB
+var Db *sql.DB
 
 func DbConnect(url string) {
 	db, err := sql.Open("libsql", url)
@@ -16,5 +16,5 @@ func DbConnect(url string) {
 		fmt.Fprintf(os.Stderr, "failed to open db %s: %s", url, err)
 		os.Exit(1)
 	}
-	DbConnection = db
+	Db = db
 }

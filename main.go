@@ -8,13 +8,14 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 )
 
 func init() {
 	lib.RegisterTemplates()
-	lib.DbConnect("file:local.db")
+	infra.DbConnect("file:local.db")
 }
 
 func main() {
@@ -45,7 +46,7 @@ func main() {
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 
-		user := models.GetLoggingInUser(lib.DbConnection, username, password)
+		user := models.GetLoggingInUser(infra.Db, username, password)
 
 		if user == nil {
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
@@ -86,7 +87,7 @@ func main() {
 		email := r.FormValue("email")
 		password := r.FormValue("password")
 
-		id, err := models.CreateUser(lib.DbConnection, username, email, password)
+		id, err := models.CreateUser(infra.Db, username, email, password)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -102,7 +103,7 @@ func main() {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		user, err := models.GetUserById(lib.DbConnection, id)
+		user, err := models.GetUserById(infra.Db, id)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
@@ -117,7 +118,7 @@ func main() {
 			return
 		}
 
-		teams, err := models.GetAllTeams(lib.DbConnection)
+		teams, err := models.GetAllTeams(infra.Db)
 
 		if err != nil {
 			w.WriteHeader(500)
