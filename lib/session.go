@@ -61,6 +61,10 @@ func DeleteSession(sessionCookie string) {
 	sessions.Unlock()
 }
 
+func GetUserByCookie(sessionCookie string) *Session {
+	return sessions.store[sessionCookie]
+}
+
 // func LoginUser(w http.ResponseWriter, r *http.Request, user *models.User ) error {
 //
 // }
