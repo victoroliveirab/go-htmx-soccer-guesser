@@ -8,7 +8,7 @@ import (
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 )
 
-func Register(w http.ResponseWriter, r *http.Request) {
+var Register http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -27,4 +27,4 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	redirectUrl := "/users/" + strconv.FormatInt(id, 10)
 	http.Redirect(w, r, redirectUrl, http.StatusSeeOther)
 
-}
+})

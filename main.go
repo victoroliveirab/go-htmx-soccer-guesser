@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/user"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
@@ -36,13 +35,16 @@ func main() {
 
 	// Users
 
-	mux.HandleFunc("GET /signin", middlewares.WithTemplate("signin.html", nil))
-	mux.HandleFunc("POST /signin", user.Login)
+	mux.Handle("GET /signin", middlewares.WithTemplate("signin.html", nil))
+	mux.Handle("POST /signin", middlewares.WithNoAuth(user.Login))
 
-	mux.HandleFunc("GET /signup", middlewares.WithTemplate("signup.html", nil))
+	mux.Handle("POST /signout", middlewares.WithAuth(user.Logout))
 
-	mux.HandleFunc("GET /users/{id}", user.Index)
-	mux.HandleFunc("POST /users", user.Register)
+	mux.Handle("GET /signup", middlewares.WithNoAuth(middlewares.WithTemplate("signup.html", nil)))
+
+	mux.Handle("GET /users/{id}", middlewares.WithAuth(user.Index))
+
+	mux.Handle("POST /users", middlewares.WithNoAuth(user.Register))
 
 	// Index
 

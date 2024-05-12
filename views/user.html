@@ -1,4 +1,7 @@
 {{ define "children" }}
+<form action="/signout" method="post">
+    <button type="submit">Signout</button>
+</form>
 <p>Id: {{ .Id }}</p>
 <p>Username: {{ .Username }}</p>
 {{ end }}

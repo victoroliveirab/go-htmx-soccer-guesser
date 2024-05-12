@@ -3,14 +3,14 @@ package user
 import (
 	"net/http"
 	"strconv"
-	"time"
 
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/config"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 )
 
-func Login(w http.ResponseWriter, r *http.Request) {
+var Login http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -34,14 +34,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionCookie := http.Cookie{
-		Name:     "session_id",
+		Name:     config.SessionCookieName,
 		Value:    session.ID,
-		MaxAge:   int(time.Hour),
-		Path:     "/",
+		MaxAge:   config.SessionCookieMaxAge,
+		Path:     config.SessionCookiePath,
 		HttpOnly: true,
 	}
 	http.SetCookie(w, &sessionCookie)
 
 	redirectUrl := "/users/" + strconv.FormatInt(int64(user.Id), 10)
 	http.Redirect(w, r, redirectUrl, http.StatusSeeOther)
-}
+})

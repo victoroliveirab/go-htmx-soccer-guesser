@@ -9,7 +9,7 @@ import (
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
+var Index http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -21,5 +21,4 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	lib.RenderTemplate(w, "user.html", user)
-
-}
+})
