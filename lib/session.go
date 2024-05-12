@@ -52,7 +52,7 @@ func IsValidSession(sessionCookie string) bool {
 	sessions.RLock()
 	session, exists := sessions.store[sessionCookie]
 	sessions.RUnlock()
-	return !exists || time.Now().After(session.ExpiresAt)
+	return exists && time.Now().Before(session.ExpiresAt)
 }
 
 func DeleteSession(sessionCookie string) {
@@ -64,7 +64,3 @@ func DeleteSession(sessionCookie string) {
 func GetUserByCookie(sessionCookie string) *Session {
 	return sessions.store[sessionCookie]
 }
-
-// func LoginUser(w http.ResponseWriter, r *http.Request, user *models.User ) error {
-//
-// }
