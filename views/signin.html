@@ -1,17 +1,25 @@
 {{ define "children" }}
-<main class="flex items-center justify-center mx-auto h-full w-full bg-indigo-50">
-    <div class="flex flex-col p-6 rounded-lg w-full mx-12 md:mx-auto md:max-w-md md:w-1/2 shadow-md gap-8 bg-white">
-        <form action="/signin" method="post" class="flex flex-col">
-            <fieldset>
-                <label for="username">Username</label>
-                <input type="text" name="username" id="username">
+<main class="flex flex-col items-center justify-center mx-auto h-full w-full bg-indigo-50">
+    <div class="flex flex-col p-6 rounded-lg w-5/6 mx-12 md:mx-auto md:max-w-md md:w-1/2 shadow-md gap-8 bg-white">
+        <h1 class="text-2xl text-center text-gray-900">Sign in to your account</h1>
+        <form class="flex flex-col gap-8" action="/signin" method="post">
+            <fieldset class="flex flex-col gap-2 relative">
+                <label for="username"
+                    class="font-medium text-xs p-1 text-gray-900 inline-block absolute left-2 -top-3 bg-white">Username</label>
+                <input class="ring-1 ring-gray-200 py-2 px-3 rounded-md outline-2 text-gray-900 outline-indigo-600"
+                    type="text" name="username" id="username">
             </fieldset>
-            <fieldset>
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password">
+            <fieldset class="flex flex-col gap-2 relative">
+                <label for="password"
+                    class="font-medium text-xs p-1 text-gray-900 inline-block absolute left-2 -top-3 bg-white">Password</label>
+                <input class="ring-1 ring-gray-200 py-2 px-3 rounded-md outline-2 text-gray-900 outline-indigo-600"
+                    type="password" name="password" id="password">
             </fieldset>
-            <button type="submit">Submit</button>
+            <button type="submit"
+                class="bg-indigo-600 shadow-md rounded-lg text-white text-sm p-2 hover:bg-indigo-500">Sign in</button>
         </form>
     </div>
+    <p class="mt-4 text-sm text-gray-500">Don't have an account? <a class="text-indigo-600 hover:text-indigo-500"
+            href="/signup">Sign-up</a> today!</p>
 </main>
 {{ end }}
