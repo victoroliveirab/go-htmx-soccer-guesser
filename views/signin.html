@@ -1,13 +1,17 @@
 {{ define "children" }}
-<form action="/signin" method="post" class="flex flex-col">
-   <fieldset>
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username">
-    </fieldset>
-    <fieldset>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password">
-    </fieldset>
-    <button type="submit">Submit</button>
-</form>
+<main class="flex items-center justify-center mx-auto h-full w-full bg-indigo-50">
+    <div class="flex flex-col p-6 rounded-lg w-full mx-12 md:mx-auto md:max-w-md md:w-1/2 shadow-md gap-8 bg-white">
+        <form action="/signin" method="post" class="flex flex-col">
+            <fieldset>
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username">
+            </fieldset>
+            <fieldset>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
+            </fieldset>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</main>
 {{ end }}
