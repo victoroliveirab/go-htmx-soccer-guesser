@@ -35,12 +35,12 @@ func main() {
 
 	// Users
 
-	mux.Handle("GET /signin", middlewares.WithTemplate("signin.html", nil))
+	mux.Handle("GET /signin", middlewares.WithTemplate("signin.html", struct{ HideNav bool }{HideNav: true}))
 	mux.Handle("POST /signin", middlewares.WithNoAuth(user.Login))
 
 	mux.Handle("POST /signout", middlewares.WithAuth(user.Logout))
 
-	mux.Handle("GET /signup", middlewares.WithNoAuth(middlewares.WithTemplate("signup.html", nil)))
+	mux.Handle("GET /signup", middlewares.WithNoAuth(middlewares.WithTemplate("signup.html", struct{ HideNav bool }{HideNav: true})))
 
 	mux.Handle("GET /users/{id}", middlewares.WithAuth(user.Index))
 
@@ -63,12 +63,15 @@ func main() {
 			return
 		}
 
+		// Find a way to default HideNav to false (middleware?)
 		data := struct {
-			Env   string
-			Teams []models.Team
+			Env     string
+			Teams   []models.Team
+			HideNav bool
 		}{
-			Env:   "DEV",
-			Teams: teams,
+			Env:     "DEV",
+			Teams:   teams,
+			HideNav: false,
 		}
 
 		lib.RenderTemplate(w, "index.html", data)
