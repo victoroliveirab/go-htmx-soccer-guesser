@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/fixture"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/user"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
@@ -45,6 +46,9 @@ func main() {
 	mux.Handle("GET /users/{id}", middlewares.WithAuth(user.Index))
 
 	mux.Handle("POST /users", middlewares.WithNoAuth(user.Register))
+
+	// Fixtures
+	mux.Handle("GET /fixtures", middlewares.WithNoAuth(fixture.NextFixtures))
 
 	// Index
 

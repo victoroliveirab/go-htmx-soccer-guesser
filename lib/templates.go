@@ -37,6 +37,12 @@ func RegisterTemplates() {
 			"views/base.html",
 		),
 	)
+	templates["fixtures/next.html"] = template.Must(
+		template.ParseFiles(
+			"views/fixtures/next.html",
+			"views/base.html",
+		),
+	)
 }
 
 func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {

@@ -1,0 +1,13 @@
+{{ define "children" }}
+<ul>
+    {{ range .Fixtures}}
+    <li id={{.Id}} class="flex flex-col gap-2">
+        <p>{{.MatchDate}}</p>
+        <div class="flex">
+        <img src="{{.HomeTeam.LogoUrl}}" class="h-8 w-8">
+        <img src="{{.AwayTeam.LogoUrl}}" class="h-8 w-8">
+        </div>
+    </li>
+    {{end}}
+</ul>
+{{end}}
