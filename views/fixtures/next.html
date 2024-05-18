@@ -1,13 +1,48 @@
 {{ define "children" }}
-<ul>
-    {{ range .Fixtures}}
-    <li id={{.Id}} class="flex flex-col gap-2">
-        <p>{{.MatchDate}}</p>
-        <div class="flex">
-        <img src="{{.HomeTeam.LogoUrl}}" class="h-8 w-8">
-        <img src="{{.AwayTeam.LogoUrl}}" class="h-8 w-8">
-        </div>
-    </li>
-    {{end}}
-</ul>
-{{end}}
+<main class="flex flex-col items-center justify-center mx-auto h-[calc(100%-56px)] w-full bg-indigo-50">
+    <h1 class="text-xl mb-4">Fixtures</h1>
+    {{ range $date, $fixturesByDate := .FixturesViewMap }}
+    <h2 class="text-lg">{{$date}}</h2>
+    <ul id="fixtures-{{$date}}-list" class="flex flex-col gap-4 w-full max-w-sm">
+        {{ range $leagueName, $fixturesByLeague := $fixturesByDate}}
+        <li id="fixtures-{{$date}}-{{$leagueName}}" class="flex flex-col gap-2">
+            <h3>{{$leagueName}}</h3>
+            <ul id="fixtures-{{$date}}-{{$leagueName}}-list" class="flex flex-col gap-1">
+                {{ range $round, $fixturesByRound := $fixturesByLeague}}
+                <li id="fixtures-{{$date}}-{{$leagueName}}-{{$round}}">
+                    <ul role="list" id="fixtures-{{$date}}-{{$leagueName}}-{{$round}}-list" class="flex flex-col gap-2">
+                        {{ range . }}
+                        <li id="fixture-{{$date}}-{{$leagueName}}-{{$round}}"
+                            class="p-3 bg-white flex gap-3 cursor-pointer">
+                            <div
+                                class="text-xs text-gray-500 flex items-center border border-transparent border-r-indigo-50 pr-3">
+                                {{.FormattedTime}}
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center flex-1 gap-1">
+                                    <div class="w-8 flex justify-center">
+                                        <img src="{{.HomeTeamLogoUrl}}" alt="Logo of {{.HomeTeamName}}"
+                                            class="h-7 w-auto">
+                                    </div>
+                                    <p class="text-sm">{{.HomeTeamName}}</p>
+                                </div>
+                                <div class="flex items-center flex-1 gap-1">
+                                    <div class="w-8 flex justify-center">
+                                        <img src="{{.AwayTeamLogoUrl}}" alt="Logo of {{.AwayTeamName}}"
+                                            class="h-7 w-auto">
+                                    </div>
+                                    <p class="text-sm">{{.AwayTeamName}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        {{ end }}
+                    </ul>
+                </li>
+                {{end}}
+            </ul>
+        </li>
+        {{ end }}
+    </ul>
+    {{ end }}
+</main>
+{{ end }}

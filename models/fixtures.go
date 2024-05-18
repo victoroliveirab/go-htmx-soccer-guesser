@@ -20,7 +20,7 @@ type RawFixture struct {
 
 type Fixture struct {
 	Id             int
-	LeagueId       int
+	League         League
 	LeagueSeasonId int
 	HomeTeam       Team
 	AwayTeam       Team
