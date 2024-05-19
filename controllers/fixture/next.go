@@ -101,7 +101,6 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 
 		byDate, existByDate := fixturesView[formattedDate]
 		if !existByDate {
-			fmt.Println("Creating a new entry for date", formattedDate)
 			fixturesView[formattedDate] = make(
 				map[LeagueNameKey]map[RoundKey][]FixtureView,
 			)
@@ -110,7 +109,6 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 
 		byLeagueName, existByLeagueName := byDate[leagueName]
 		if !existByLeagueName {
-			fmt.Println("Creating a new entry for league_name", leagueName)
 			byDate[leagueName] = make(
 				map[RoundKey][]FixtureView,
 			)
@@ -119,12 +117,9 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 
 		byRound, existByRound := byLeagueName[round]
 		if !existByRound {
-			fmt.Println("Creating a new entry for round", round)
 			byRound = make([]FixtureView, 0)
 			byLeagueName[round] = byRound
 		}
-
-		fmt.Println(fixtureView)
 
 		byRound = append(
 			byRound,
@@ -132,8 +127,6 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 		)
 		byLeagueName[round] = byRound
 	}
-
-	fmt.Println(fixturesView)
 
 	data := struct {
 		FixturesViewMap FixtureViewMap

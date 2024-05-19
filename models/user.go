@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/base64"
-	"fmt"
 	"strings"
 )
 
@@ -76,8 +75,6 @@ func GetUserById(db *sql.DB, id int64) (*User, error) {
 	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.PasswordHash, &user.CreatedAt, &user.UpdatedAt); err != nil {
 		return nil, err
 	}
-
-	fmt.Println(user)
 
 	return &user, nil
 }
