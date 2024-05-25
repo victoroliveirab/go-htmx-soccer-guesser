@@ -14,33 +14,34 @@ func RegisterTemplates() {
 	}
 	templates["index.html"] = template.Must(
 		template.ParseFiles(
-			"views/index.html",
-			"views/teams/index.html",
 			"views/base.html",
+			"views/teams/index.html",
+			"views/index.html",
 		),
 	)
 	templates["signup.html"] = template.Must(
 		template.ParseFiles(
-			"views/signup.html",
 			"views/base.html",
+			"views/signup.html",
 		),
 	)
 	templates["user.html"] = template.Must(
 		template.ParseFiles(
-			"views/user.html",
 			"views/base.html",
+			"views/user.html",
 		),
 	)
 	templates["signin.html"] = template.Must(
 		template.ParseFiles(
-			"views/signin.html",
 			"views/base.html",
+			"views/signin.html",
 		),
 	)
 	templates["fixtures/next.html"] = template.Must(
 		template.ParseFiles(
-			"views/fixtures/next.html",
 			"views/base.html",
+			"views/guesses/fixture-modal.html",
+			"views/fixtures/next.html",
 		),
 	)
 }
@@ -55,4 +56,9 @@ func RenderTemplate(w http.ResponseWriter, name string, data interface{}) error 
 	tmpl.ExecuteTemplate(w, "base", data)
 
 	return nil
+}
+
+func RenderPartial(w http.ResponseWriter, path string, block string, data interface{}) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	template.Must(template.ParseFiles(path)).ExecuteTemplate(w, block, data)
 }
