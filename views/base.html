@@ -37,7 +37,7 @@
                     <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                         <div class="flex flex-shrink-0 items-center">
                             <img class="h-8 w-auto absolute left-1/2 -translate-x-1/2 sm:relative"
-                                src="/static/img/logo.png" width="175px" height="150px" alt="Your Company">
+                                src="/static/img/logo.png" width="175px" height="150px" alt="Soccer Guesser Logo">
                         </div>
                         <div class="hidden sm:ml-6 sm:block">
                             <div class="flex items-center space-x-4">
@@ -54,8 +54,14 @@
                         </div>
                     </div>
                     <div class="text-gray-800">
+                        {{if .LoggedIn}}
                         <a class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium"
-                            href="/logout">Logout</a>
+                            href="/signout">Logout</a>
+                        {{else}}
+                        <a class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium"
+                            href="/signin">Sign-in</a>
+                        {{end}}
+
                     </div>
                 </div>
             </div>
