@@ -15,18 +15,13 @@ CREATE TABLE IF NOT EXISTS Leagues (
   logo_url TEXT,
   country TEXT,
   country_flag_url TEXT,
+  league_type TEXT,
   meta TEXT
-);
-
-CREATE TABLE IF NOT EXISTS League_Seasons (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  league_id INTEGER NOT NULL,
-  season INTEGER NOT NULL,
-  FOREIGN KEY (league_id) REFERENCES Leagues(id)
 );
 
 CREATE TABLE IF NOT EXISTS Venues (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  api_football_id INTEGER NOT NULL UNIQUE,
   name TEXT NOT NULL,
   city TEXT NOT NULL
 );
@@ -69,21 +64,21 @@ CREATE TABLE IF NOT EXISTS Fixtures (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     api_football_id INTEGER NOT NULL,
     league_id INTEGER,
-    league_season_id INTEGER,
+    season INTEGER,
     home_team_id INTEGER NOT NULL,
     away_team_id INTEGER NOT NULL,
     timestamp_numb INTEGER,
-    match_date TEXT NOT NULL,  -- SQLite does not have a DATETIME type
     venue_id INTEGER,
     status INTEGER NOT NULL,
     referee TEXT,
     home_score INTEGER,
     away_score INTEGER,
-    round INTEGER,
+    home_winner INTEGER,
+    away_winner INTEGER,
+    round TEXT,
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
     updated_at INTEGER DEFAULT (strftime('%s', 'now')),
     FOREIGN KEY (league_id) REFERENCES Leagues(id),
-    FOREIGN KEY (league_season_id) REFERENCES League_Seasons(id),
     FOREIGN KEY (home_team_id) REFERENCES Teams(id),
     FOREIGN KEY (away_team_id) REFERENCES Teams(id),
     FOREIGN KEY (venue_id) REFERENCES Venues(id)
@@ -112,7 +107,6 @@ CREATE INDEX IF NOT EXISTS idx_leagues_api_football_id on Leagues(api_football_i
 CREATE INDEX IF NOT EXISTS idx_fixtures_api_football_id on Fixtures(api_football_id);
 CREATE INDEX IF NOT EXISTS idx_fixtures_home_team_id ON Fixtures(home_team_id);
 CREATE INDEX IF NOT EXISTS idx_fixtures_away_team_id ON Fixtures(away_team_id);
-CREATE INDEX IF NOT EXISTS idx_fixtures_match_date ON Fixtures(match_date);
 
 CREATE INDEX IF NOT EXISTS idx_user_groups_user_id ON User_Groups(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_groups_group_id ON User_Groups(group_id);
