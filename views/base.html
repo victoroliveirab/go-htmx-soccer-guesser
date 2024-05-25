@@ -1,21 +1,85 @@
+{{define "title"}}Soccer Guesser{{end}}
+{{define "scripts"}}{{end}}
 {{define "base"}}
 <html>
 
 <head>
-    <title></title>
+    <title>{{template "title" .}} | {{ .Title }}</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="/static/css/styles.css" rel="stylesheet" />
     <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
 </head>
 
-<body>
+<body class="relative">
     {{ if not .HideNav}}
-        <header class="w-full h-14 bg-red-50">
-            <p>Header</p>
-        </header>
+    <header class="relative w-full h-14 bg-green-400 flex">
+        <nav class="bg-green-500 w-full text-sm">
+            <div class="mx-auto max-w-7xl px-4 relative">
+                <div class="relative flex h-full items-center justify-between">
+                    <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                        <!-- Mobile menu button-->
+                        <button type="button"
+                            class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-900 hover:bg-gray-700 hover:text-green-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                            aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-button">
+                            <span class="sr-only">Open main menu</span>
+                            <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                            <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                        <div class="flex flex-shrink-0 items-center">
+                            <img class="h-8 w-auto absolute left-1/2 -translate-x-1/2 sm:relative"
+                                src="/static/img/logo.png" width="175px" height="150px" alt="Your Company">
+                        </div>
+                        <div class="hidden sm:ml-6 sm:block">
+                            <div class="flex items-center space-x-4">
+                                <a href="#"
+                                    class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium"
+                                    aria-current="page">Dashboard</a>
+                                <a href="#"
+                                    class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium">Team</a>
+                                <a href="#"
+                                    class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium">Projects</a>
+                                <a href="#"
+                                    class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium">Calendar</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-gray-800">
+                        <a class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium"
+                            href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sm:hidden" id="mobile-menu">
+                <div class="hidden space-y-1 px-2 pb-3 pt-2 bg-green-500 z-50">
+                    <a href="#" class="bg-gray-900 text-white block rounded-md px-3 py-2 font-medium"
+                        aria-current="page">Dashboard</a>
+                    <a href="#"
+                        class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium">Team</a>
+                    <a href="#"
+                        class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium">Projects</a>
+                    <a href="#"
+                        class="text-gray-800 hover:outline hover:outline-gray-800 hover:outline-2 block rounded-md px-3 py-2 font-medium">Calendar</a>
+                </div>
+            </div>
+        </nav>
+    </header>
     {{ end }}
-    {{ template "children" . }}
+    <main class="w-full max-w-7xl mx-auto bg-indigo-900">
+        {{ template "children" . }}
+    </main>
+    {{ template "scripts" .}}
+    <script src="/static/js/index.js" async="true" defer="true"></script>
 </body>
 
 </html>
