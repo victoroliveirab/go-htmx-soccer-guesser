@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/fixture"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/user"
@@ -77,6 +78,14 @@ func main() {
 
 		lib.RenderTemplate(w, r, "index.html", data)
 	})
+
+	session := &lib.Session{
+		ID:        "4760a0753a07d3d53217afb028d68901cbf59c64e6913f02130b76612e1308c0",
+		UserID:    5,
+		ExpiresAt: time.Now().Add(time.Hour),
+	}
+
+	lib.AddSession(session)
 
 	fmt.Println("Listening on port", port)
 	muxWithSession := middlewares.WithSession(mux)

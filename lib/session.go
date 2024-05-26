@@ -64,3 +64,10 @@ func DeleteSession(sessionCookie string) {
 func GetUserByCookie(sessionCookie string) *Session {
 	return sessions.store[sessionCookie]
 }
+
+func AddSession(session *Session) {
+	id := session.ID
+	sessions.Lock()
+	sessions.store[id] = session
+	sessions.Unlock()
+}
