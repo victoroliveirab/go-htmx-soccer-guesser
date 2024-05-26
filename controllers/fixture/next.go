@@ -49,6 +49,7 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
         JOIN Teams ho ON f.home_team_id = ho.id
         JOIN Teams aw ON f.away_team_id = aw.id
         WHERE timestamp_numb BETWEEN ? AND ?
+        ORDER BY f.timestamp_numb ASC;
     `
 	rows, err := infra.Db.Query(query, startTime, endTime)
 
