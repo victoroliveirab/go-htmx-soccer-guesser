@@ -1,5 +1,5 @@
 {{ define "children" }}
-<main class="flex flex-col items-center justify-center mx-auto h-[calc(100%-56px)] w-full bg-indigo-50">
+<div class="flex flex-col items-center justify-center mx-auto h-[calc(100%-56px)] w-full">
     <h1 class="text-xl mb-4">Fixtures</h1>
     {{ range $date, $fixturesByDate := .FixturesViewMap }}
     <h2 class="text-lg">{{$date}}</h2>
@@ -16,7 +16,7 @@
                             id="fixture-{{$date}}-{{$leagueName}}-{{$round}}"
                             class="p-3 bg-white flex gap-3 cursor-pointer">
                             <div
-                                class="text-xs text-gray-500 flex items-center border border-transparent border-r-indigo-50 pr-3">
+                                class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3">
                                 {{.FormattedTime}}
                             </div>
                             <div class="flex flex-col gap-1">
@@ -45,7 +45,7 @@
         {{ end }}
     </ul>
     {{ end }}
-</main>
+</div>
 <div id="modal-wrapper"
     class="hidden fixed top-0 left-0 right-0 bottom-0 text-white flex-col items-center justify-center">
     <div id="modal-overlay" class="fixed h-full w-full bg-black opacity-0 transition-opacity"></div>
