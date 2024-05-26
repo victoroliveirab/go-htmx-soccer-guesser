@@ -13,7 +13,7 @@ import (
 type FixtureView struct {
 	Id              int
 	LeagueName      string
-	Round           int
+	Round           string
 	FormattedDate   string
 	FormattedTime   string
 	HomeTeamId      int
@@ -28,7 +28,7 @@ type FixtureView struct {
 
 type DateKey string
 type LeagueNameKey string
-type RoundKey int
+type RoundKey string
 type FixtureViewMap map[DateKey]map[LeagueNameKey]map[RoundKey][]FixtureView
 
 var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -36,14 +36,14 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 	// threeDaysAhead := now.Add(3 * 24 * time.Hour)
 	tomorrow := now.Add(24 * time.Hour)
 
-	startTime := now.Unix() * 1000
-	// endTime := threeDaysAhead.Unix() * 1000
-	endTime := tomorrow.Unix() * 1000
+	startTime := now.Unix()
+	// endTime := threeDaysAhead.Unix()
+	endTime := tomorrow.Unix()
 
 	query := `
-        SELECT f.id, f.league_id, le.name, f.league_season_id, f.home_team_id,
+        SELECT f.id, f.league_id, le.name, f.season, f.home_team_id,
         ho.name, ho.logo_url, f.away_team_id, aw.name, aw.logo_url,
-        f.timestamp_numb, f.match_date, f.status, f.round
+        f.timestamp_numb, f.status, f.round
         FROM Fixtures f
         JOIN Leagues le ON f.league_id = le.id
         JOIN Teams ho ON f.home_team_id = ho.id
@@ -65,11 +65,11 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 
 		err := rows.Scan(
 			&fixture.Id, &fixture.League.Id, &fixture.League.Name,
-			&fixture.LeagueSeasonId, &fixture.HomeTeam.Id,
+			&fixture.Season, &fixture.HomeTeam.Id,
 			&fixture.HomeTeam.Name, &fixture.HomeTeam.LogoUrl,
 			&fixture.AwayTeam.Id, &fixture.AwayTeam.Name,
 			&fixture.AwayTeam.LogoUrl, &fixture.TimestampNumb,
-			&fixture.MatchDate, &fixture.Status, &fixture.Round,
+			&fixture.Status, &fixture.Round,
 		)
 
 		if err != nil {
@@ -77,7 +77,7 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 			return
 		}
 
-		datetime := time.Unix(int64(fixture.TimestampNumb/1000), 0)
+		datetime := time.Unix(int64(fixture.TimestampNumb), 0)
 		var formattedDate DateKey = DateKey(datetime.Format("02/01/2006"))
 		formattedTime := datetime.Format("15:04")
 		leagueName := LeagueNameKey(fixture.League.Name)
@@ -128,13 +128,9 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 		byLeagueName[round] = byRound
 	}
 
-	data := struct {
-		FixturesViewMap FixtureViewMap
-		HideNav         bool
-	}{
-		FixturesViewMap: fixturesView,
-		HideNav:         false,
+	data := map[string]interface{}{
+		"FixturesViewMap": fixturesView,
 	}
 
-	lib.RenderTemplate(w, "fixtures/next.html", data)
+	lib.RenderTemplate(w, r, "fixtures/next.html", data)
 })

@@ -36,19 +36,20 @@ func main() {
 
 	// Users
 
-	mux.Handle("GET /signin", middlewares.WithTemplate("signin.html", struct{ HideNav bool }{HideNav: true}))
+	mux.Handle("GET /signin", middlewares.WithNoAuth(middlewares.WithTemplate("signin.html", map[string]interface{}{"HideNav": true})))
 	mux.Handle("POST /signin", middlewares.WithNoAuth(user.Login))
 
-	mux.Handle("POST /signout", middlewares.WithAuth(user.Logout))
+	mux.Handle("GET /signout", middlewares.WithAuth(user.Logout))
 
-	mux.Handle("GET /signup", middlewares.WithNoAuth(middlewares.WithTemplate("signup.html", struct{ HideNav bool }{HideNav: true})))
+	mux.Handle("GET /signup", middlewares.WithNoAuth(middlewares.WithTemplate("signup.html", nil)))
 
 	mux.Handle("GET /users/{id}", middlewares.WithAuth(user.Index))
 
 	mux.Handle("POST /users", middlewares.WithNoAuth(user.Register))
 
 	// Fixtures
-	mux.Handle("GET /fixtures", middlewares.WithNoAuth(fixture.NextFixtures))
+	mux.Handle("GET /fixtures/{id}", middlewares.WithNoAuth(fixture.ViewFixture))
+	mux.Handle("GET /fixtures", middlewares.WithAuth(fixture.NextFixtures))
 
 	// Index
 
@@ -68,20 +69,17 @@ func main() {
 		}
 
 		// Find a way to default HideNav to false (middleware?)
-		data := struct {
-			Env     string
-			Teams   []models.Team
-			HideNav bool
-		}{
-			Env:     "DEV",
-			Teams:   teams,
-			HideNav: false,
+		data := map[string]interface{}{
+			"Env":   "DEV",
+			"Teams": teams,
+			"Title": "Home",
 		}
 
-		lib.RenderTemplate(w, "index.html", data)
+		lib.RenderTemplate(w, r, "index.html", data)
 	})
 
 	fmt.Println("Listening on port", port)
-	muxWithLogging := middlewares.WithLogging(mux)
+	muxWithSession := middlewares.WithSession(mux)
+	muxWithLogging := middlewares.WithLogging(muxWithSession)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), muxWithLogging))
 }

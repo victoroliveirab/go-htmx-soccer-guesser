@@ -12,7 +12,8 @@
                 <li id="fixtures-{{$date}}-{{$leagueName}}-{{$round}}">
                     <ul role="list" id="fixtures-{{$date}}-{{$leagueName}}-{{$round}}-list" class="flex flex-col gap-2">
                         {{ range . }}
-                        <li id="fixture-{{$date}}-{{$leagueName}}-{{$round}}"
+                        <li hx-get="/fixtures/{{.Id}}" hx-trigger="click" hx-target="#modal-wrapper" hx-swap="beforeend"
+                            id="fixture-{{$date}}-{{$leagueName}}-{{$round}}"
                             class="p-3 bg-white flex gap-3 cursor-pointer">
                             <div
                                 class="text-xs text-gray-500 flex items-center border border-transparent border-r-indigo-50 pr-3">
@@ -45,4 +46,11 @@
     </ul>
     {{ end }}
 </main>
+<div id="modal-wrapper"
+    class="hidden fixed top-0 left-0 right-0 bottom-0 text-white flex-col items-center justify-center">
+    <div id="modal-overlay" class="fixed h-full w-full bg-black opacity-0 transition-opacity"></div>
+</div>
+{{ end }}
+{{ define "scripts" }}
+<!-- <script defer async src="/static/js/fixtures_modal.js"></script> -->
 {{ end }}

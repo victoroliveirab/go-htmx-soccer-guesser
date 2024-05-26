@@ -20,5 +20,9 @@ var Index http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
-	lib.RenderTemplate(w, "user.html", user)
+
+	data := map[string]interface{}{
+		"User": user,
+	}
+	lib.RenderTemplate(w, r, "user.html", data)
 })

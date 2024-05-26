@@ -6,8 +6,8 @@ import (
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 )
 
-func WithTemplate(name string, data interface{}) http.Handler {
+func WithTemplate(name string, data map[string]interface{}) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		lib.RenderTemplate(w, name, data)
+		lib.RenderTemplate(w, r, name, data)
 	})
 }
