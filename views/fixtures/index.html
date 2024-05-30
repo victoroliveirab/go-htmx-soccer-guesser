@@ -1,0 +1,68 @@
+{{ define "children" }}
+<div class="flex flex-col items-center mx-auto h-[calc(100%-56px)] overflow-y-auto border-t border-t-gray-200 p-4">
+    {{ template "page-header" .}}
+    <div class="flex flex-col w-full max-h-full">
+        {{ if .NoMatches }}
+        <p class="text-center">Sorry, no matches found this day :/</p>
+        {{ else }}
+        <ul class="flex flex-col gap-4 w-full max-w-sm">
+            {{ range $leagueName, $fixturesByLeague := .FixturesViewMap }}
+            <li id="fixtures-{{$leagueName}}" class="flex flex-col gap-2">
+                <h3>{{$leagueName}}</h3>
+                <ul id="fixtures-{{$leagueName}}-list" class="flex flex-col gap-1">
+                    {{ range $round, $fixturesByRound := $fixturesByLeague}}
+                    <li id="fixtures-{{$leagueName}}-{{$round}}">
+                        <ul role="list" id="fixtures-{{$leagueName}}-{{$round}}-list" class="flex flex-col">
+                            {{ range . }}
+                            <li hx-get="/fixtures/{{.Id}}" hx-trigger="click" hx-target="#modal-wrapper"
+                                hx-swap="beforeend" id="fixture-{{$leagueName}}-{{$round}}"
+                                class="p-3 bg-white flex gap-3 cursor-pointer border-y-gray-200 border-y -mt-[1px]">
+                                <div
+                                    class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3">
+                                    {{.FormattedTime}}
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center flex-1 gap-1">
+                                        <div class="w-8 flex justify-center">
+                                            <img src="{{.HomeTeamLogoUrl}}" alt="Logo of {{.HomeTeamName}}"
+                                                class="h-7 w-auto">
+                                        </div>
+                                        <p class="text-sm">{{.HomeTeamName}}</p>
+                                    </div>
+                                    <div class="flex items-center flex-1 gap-1">
+                                        <div class="w-8 flex justify-center">
+                                            <img src="{{.AwayTeamLogoUrl}}" alt="Logo of {{.AwayTeamName}}"
+                                                class="h-7 w-auto">
+                                        </div>
+                                        <p class="text-sm">{{.AwayTeamName}}</p>
+                                    </div>
+                                </div>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </li>
+                    {{end}}
+                </ul>
+            </li>
+            {{ end }}
+        </ul>
+        {{ end }}
+    </div>
+</div>
+<div id="modal-wrapper"
+    class="hidden fixed top-0 left-0 right-0 bottom-0 text-white flex-col items-center justify-center">
+    <div id="modal-overlay" class="fixed h-full w-full bg-black opacity-0 transition-opacity"></div>
+</div>
+{{ end }}
+
+{{ block "page-header" . }}
+<div class="flex items-center justify-between mb-2 w-full">
+    <a href="/fixtures?date={{.PrevDate}}">&lt;</a>
+    <h1>Fixtures - <span class="text-xs">{{.Date}}</span></h1>
+    <a href="/fixtures?date={{.NextDate}}">&gt;</a>
+</div>
+{{ end }}
+
+{{ define "scripts" }}
+<!-- <script defer async src="/static/js/fixtures_modal.js"></script> -->
+{{ end }}

@@ -26,3 +26,8 @@ INSERT INTO User_Groups (user_id, group_id) VALUES
 ((SELECT id FROM Users WHERE username = 'user3'), (SELECT id FROM Groups WHERE name = 'Group B'));
 
 -- User 4 is not part of any group, so no entry in User_Groups for user4
+
+-- Insert me as part of Group A
+INSERT INTO User_Groups (user_id, group_id) VALUES
+((SELECT id FROM Users WHERE username = 'victoroliveirab'), (SELECT id FROM Groups WHERE name = 'Group A'));
+

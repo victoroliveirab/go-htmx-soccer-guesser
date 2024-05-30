@@ -50,7 +50,7 @@ func main() {
 
 	// Fixtures
 	mux.Handle("GET /fixtures/{id}", middlewares.WithNoAuth(fixture.ViewFixture))
-	mux.Handle("GET /fixtures", middlewares.WithAuth(fixture.NextFixtures))
+	mux.Handle("GET /fixtures", middlewares.WithAuth(fixture.FixturesByDate))
 
 	// Index
 
@@ -80,7 +80,7 @@ func main() {
 	})
 
 	session := &lib.Session{
-		ID:        "4760a0753a07d3d53217afb028d68901cbf59c64e6913f02130b76612e1308c0",
+		ID:        "0c0ce7e041d521061f25f49f692cf0f6171543a284c35e8b03760a05b262141d",
 		UserID:    5,
 		ExpiresAt: time.Now().Add(time.Hour),
 	}

@@ -3,6 +3,7 @@ package fixture
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
@@ -29,16 +30,32 @@ type FixtureView struct {
 type DateKey string
 type LeagueNameKey string
 type RoundKey string
-type FixtureViewMap map[DateKey]map[LeagueNameKey]map[RoundKey][]FixtureView
+type FixtureMap map[LeagueNameKey]map[RoundKey][]FixtureView
 
-var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	now := time.Now().UTC()
-	// threeDaysAhead := now.Add(3 * 24 * time.Hour)
-	tomorrow := now.Add(24 * time.Hour)
+// Date in format YYYY-mm-dd
+var dateRegex = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
 
-	startTime := now.Unix()
-	// endTime := threeDaysAhead.Unix()
-	endTime := tomorrow.Unix()
+func getQueriedDate(r *http.Request) time.Time {
+	queryParams := r.URL.Query()
+	queriedDate := queryParams.Get("date")
+	if !dateRegex.MatchString(queriedDate) {
+		return time.Now().UTC().Truncate(24 * time.Hour)
+	}
+	parsedDate, err := time.Parse("2006-01-02", queriedDate)
+	if err != nil {
+		return time.Now().UTC().Truncate(24 * time.Hour)
+	}
+	return parsedDate.Truncate(24 * time.Hour)
+}
+
+var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	startOfDay := getQueriedDate(r)
+	endOfDay := time.Date(startOfDay.Year(), startOfDay.Month(), startOfDay.Day(), 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
+
+	// FIXME: generalize this behavior
+	// Prevent 21:00 matches of yesterday from showing today (GMT-03)
+	startTime := startOfDay.Add(3 * time.Hour).Unix()
+	endTime := endOfDay.Unix()
 
 	query := `
         SELECT f.id, f.league_id, le.name, f.season, f.home_team_id,
@@ -59,9 +76,11 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 	}
 	defer rows.Close()
 
-	fixturesView := make(FixtureViewMap)
+	fixturesView := make(FixtureMap)
+	empty := true
 
 	for rows.Next() {
+		empty = false
 		var fixture models.Fixture
 
 		err := rows.Scan(
@@ -80,6 +99,7 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 
 		datetime := time.Unix(int64(fixture.TimestampNumb), 0)
 		var formattedDate DateKey = DateKey(datetime.Format("02/01/2006"))
+		fmt.Println(formattedDate)
 		formattedTime := datetime.Format("15:04")
 		leagueName := LeagueNameKey(fixture.League.Name)
 		round := RoundKey(fixture.Round)
@@ -100,20 +120,12 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 			AwayTeamScore:   fixture.AwayScore,
 		}
 
-		byDate, existByDate := fixturesView[formattedDate]
-		if !existByDate {
-			fixturesView[formattedDate] = make(
-				map[LeagueNameKey]map[RoundKey][]FixtureView,
-			)
-			byDate = fixturesView[formattedDate]
-		}
-
-		byLeagueName, existByLeagueName := byDate[leagueName]
+		byLeagueName, existByLeagueName := fixturesView[leagueName]
 		if !existByLeagueName {
-			byDate[leagueName] = make(
+			fixturesView[leagueName] = make(
 				map[RoundKey][]FixtureView,
 			)
-			byLeagueName = byDate[leagueName]
+			byLeagueName = fixturesView[leagueName]
 		}
 
 		byRound, existByRound := byLeagueName[round]
@@ -130,8 +142,19 @@ var NextFixtures http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *
 	}
 
 	data := map[string]interface{}{
+		"PrevDate":        startOfDay.AddDate(0, 0, -1).Format("2006-01-02"),
+		"NextDate":        startOfDay.AddDate(0, 0, 1).Format("2006-01-02"),
+		"Date":            startOfDay.Format("02/01/2006"),
 		"FixturesViewMap": fixturesView,
+		"NoMatches":       empty,
 	}
 
-	lib.RenderTemplate(w, r, "fixtures/next.html", data)
+	// cache page for 1 min
+	cacheControlHeader := "public, max-age=60"
+	expirationTime := time.Now().Add(time.Minute)
+
+	w.Header().Set("Cache-Control", cacheControlHeader)
+	w.Header().Set("Expires", expirationTime.Format(http.TimeFormat))
+
+	lib.RenderTemplate(w, r, "fixtures/index.html", data)
 })

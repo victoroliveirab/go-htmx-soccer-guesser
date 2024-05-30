@@ -37,11 +37,12 @@ func RegisterTemplates() {
 			"views/signin.html",
 		),
 	)
-	templates["fixtures/next.html"] = template.Must(
+	templates["fixtures/index.html"] = template.Must(
 		template.ParseFiles(
 			"views/base.html",
-			"views/guesses/fixture-modal.html",
-			"views/fixtures/next.html",
+			"views/fixtures/index.html",
+			// "views/guesses/fixture-modal.html",
+			// "views/fixtures/next.html",
 		),
 	)
 }
@@ -63,6 +64,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data ma
 		data["HideNav"] = false
 	}
 	data["LoggedIn"] = ctx.Value("LoggedIn")
+	data["UserID"] = ctx.Value("UserID")
 	data["CurrentPath"] = r.URL.Path
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
