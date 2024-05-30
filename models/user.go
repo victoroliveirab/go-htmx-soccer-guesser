@@ -11,6 +11,7 @@ import (
 type User struct {
 	Id           int
 	Username     string
+	Name         string
 	Email        string
 	PasswordHash string
 	CreatedAt    string
@@ -72,7 +73,7 @@ func GetUserById(db *sql.DB, id int64) (*User, error) {
 	row := db.QueryRow("SELECT * FROM Users WHERE id = $1", id)
 
 	var user User
-	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.PasswordHash, &user.CreatedAt, &user.UpdatedAt); err != nil {
+	if err := row.Scan(&user.Id, &user.Username, &user.Name, &user.Email, &user.PasswordHash, &user.CreatedAt, &user.UpdatedAt); err != nil {
 		return nil, err
 	}
 

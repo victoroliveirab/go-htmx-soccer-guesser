@@ -1,0 +1,17 @@
+{{ define "children" }}
+<h1 class="text-2xl mb-3">Hello, {{.User.Name}} 👋</h1>
+<section>
+    <h2 class="text-lg mb-1">Your Groups</h2>
+    <ul>
+        {{ range .UserGroups}}
+        <li class="p-2 flex justify-between border-y -mt-[1px] cursor-pointer">
+            <div class="flex flex-col">
+                <h3 class="font-semibold">{{.Name}}</h3>
+                <h4 class="text-sm">{{.Description}}</h4>
+            </div>
+            <p class="self-end text-xs text-gray-500">Members: {{.NumberOfMembers}}</p>
+        </li>
+        {{ end }}
+    </ul>
+</section>
+{{ end }}

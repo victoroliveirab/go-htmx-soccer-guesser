@@ -25,10 +25,10 @@ func RegisterTemplates() {
 			"views/signup.html",
 		),
 	)
-	templates["user.html"] = template.Must(
+	templates["user/index.html"] = template.Must(
 		template.ParseFiles(
 			"views/base.html",
-			"views/user.html",
+			"views/user/index.html",
 		),
 	)
 	templates["signin.html"] = template.Must(

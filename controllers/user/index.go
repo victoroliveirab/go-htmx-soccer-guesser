@@ -21,8 +21,12 @@ var Index http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	groups := models.GetGroupsAssociatedWithUserId(infra.Db, id)
+
 	data := map[string]interface{}{
-		"User": user,
+		"User":       user,
+		"UserGroups": groups,
 	}
-	lib.RenderTemplate(w, r, "user.html", data)
+
+	lib.RenderTemplate(w, r, "user/index.html", data)
 })

@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS Odds (
 CREATE TABLE IF NOT EXISTS Users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
