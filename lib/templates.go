@@ -42,7 +42,6 @@ func RegisterTemplates() {
 			"views/base.html",
 			"views/fixtures/index.html",
 			// "views/guesses/fixture-modal.html",
-			// "views/fixtures/next.html",
 		),
 	)
 }
