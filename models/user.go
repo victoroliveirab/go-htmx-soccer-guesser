@@ -35,8 +35,8 @@ func hashPassword(password, salt string) string {
 
 func GetLoggingInUser(db *sql.DB, username, password string) *User {
 	var user User
-	row := db.QueryRow("SELECT * FROM Users WHERE username = $1", username)
-	if err := row.Scan(&user.Id, &user.Username, &user.Email, &user.PasswordHash, &user.CreatedAt, &user.UpdatedAt); err != nil {
+	row := db.QueryRow("SELECT id, password_hash FROM Users WHERE username = $1", username)
+	if err := row.Scan(&user.Id, &user.PasswordHash); err != nil {
 		return nil
 	}
 	passwordHashSplit := strings.Split(user.PasswordHash, ":")
