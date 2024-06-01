@@ -1,5 +1,5 @@
 {{ define "children" }}
-<div class="flex flex-col items-center mx-auto h-[calc(100%-56px)] overflow-y-auto">
+<div class="flex flex-col items-center mx-auto h-[calc(100%-56px-2rem)]">
     {{ template "page-header" .}}
     <div class="flex flex-col w-full max-h-full">
         {{ if .NoMatches }}
@@ -21,22 +21,37 @@
                                     class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3">
                                     {{.FormattedTime}}
                                 </div>
-                                <div class="flex flex-col gap-1">
+                                <div class="flex-1 flex flex-col gap-1">
                                     <div class="flex items-center flex-1 gap-1">
                                         <div class="w-8 flex justify-center">
                                             <img src="{{.HomeTeamLogoUrl}}" alt="Logo of {{.HomeTeamName}}"
                                                 class="h-7 w-auto">
                                         </div>
-                                        <p class="text-sm">{{.HomeTeamName}}</p>
+                                        <div class="text-sm flex-1 flex justify-between">
+                                            <p>{{.HomeTeamName}}</p>
+                                            {{ if eq .Status "FIN" }}
+                                            <span>{{.HomeTeamScore}}</span>
+                                            {{ end }}
+                                        </div>
                                     </div>
                                     <div class="flex items-center flex-1 gap-1">
                                         <div class="w-8 flex justify-center">
                                             <img src="{{.AwayTeamLogoUrl}}" alt="Logo of {{.AwayTeamName}}"
                                                 class="h-7 w-auto">
                                         </div>
-                                        <p class="text-sm">{{.AwayTeamName}}</p>
+                                        <div class="text-sm flex-1 flex justify-between">
+                                            <p>{{.AwayTeamName}}</p>
+                                            {{ if eq .Status "FIN" }}
+                                            <span>{{.AwayTeamScore}}</span>
+                                            {{ end }}
+                                        </div>
                                     </div>
                                 </div>
+                                {{ if eq .Status "PST"}}
+                                <div class="flex items-center text-sm text-gray-500">
+                                    PST
+                                </div>
+                                {{ end }}
                             </li>
                             {{ end }}
                         </ul>
@@ -57,9 +72,9 @@
 
 {{ block "page-header" . }}
 <div class="flex items-center justify-between mb-2 w-full">
-    <a href="/fixtures?date={{.PrevDate}}">&lt;</a>
+    <a href="/fixtures?date={{.PrevDate}}">&larr;</a>
     <h1>Fixtures - <span class="text-xs">{{.Date}}</span></h1>
-    <a href="/fixtures?date={{.NextDate}}">&gt;</a>
+    <a href="/fixtures?date={{.NextDate}}">&rarr;</a>
 </div>
 {{ end }}
 
