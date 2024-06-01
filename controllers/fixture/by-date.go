@@ -1,6 +1,7 @@
 package fixture
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -15,16 +16,19 @@ type FixtureView struct {
 	Id              int
 	LeagueName      string
 	Round           string
+	Status          string
 	FormattedDate   string
 	FormattedTime   string
 	HomeTeamId      int
 	HomeTeamName    string
 	HomeTeamLogoUrl string
 	HomeTeamScore   int
+	HomeTeamWinner  bool
 	AwayTeamId      int
 	AwayTeamName    string
 	AwayTeamLogoUrl string
 	AwayTeamScore   int
+	AwayTeamWinner  bool
 }
 
 type DateKey string
@@ -55,12 +59,13 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 	// FIXME: generalize this behavior
 	// Prevent 21:00 matches of yesterday from showing today (GMT-03)
 	startTime := startOfDay.Add(3 * time.Hour).Unix()
-	endTime := endOfDay.Unix()
+	endTime := endOfDay.Add(3 * time.Hour).Unix()
 
 	query := `
         SELECT f.id, f.league_id, le.name, f.season, f.home_team_id,
         ho.name, ho.logo_url, f.away_team_id, aw.name, aw.logo_url,
-        f.timestamp_numb, f.status, f.round
+        f.timestamp_numb, f.status, f.round,
+        f.home_score, f.away_score, f.home_winner, f.away_winner
         FROM Fixtures f
         JOIN Leagues le ON f.league_id = le.id
         JOIN Teams ho ON f.home_team_id = ho.id
@@ -82,6 +87,8 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 	for rows.Next() {
 		empty = false
 		var fixture models.Fixture
+		var homeScore, awayScore sql.NullInt64
+		var homeTeamWinner, awayTeamWinner sql.NullInt64
 
 		err := rows.Scan(
 			&fixture.Id, &fixture.League.Id, &fixture.League.Name,
@@ -89,7 +96,8 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 			&fixture.HomeTeam.Name, &fixture.HomeTeam.LogoUrl,
 			&fixture.AwayTeam.Id, &fixture.AwayTeam.Name,
 			&fixture.AwayTeam.LogoUrl, &fixture.TimestampNumb,
-			&fixture.Status, &fixture.Round,
+			&fixture.Status, &fixture.Round, &homeScore,
+			&awayScore, &homeTeamWinner, &awayTeamWinner,
 		)
 
 		if err != nil {
@@ -108,16 +116,27 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 			Id:              fixture.Id,
 			LeagueName:      fixture.League.Name,
 			Round:           fixture.Round,
+			Status:          models.FixtureTranslateStatus(fixture.Status),
 			FormattedDate:   fmt.Sprintf("%s - %s", formattedDate, formattedTime),
 			FormattedTime:   formattedTime,
 			HomeTeamId:      fixture.HomeTeam.Id,
 			HomeTeamName:    fixture.HomeTeam.Name,
 			HomeTeamLogoUrl: fixture.HomeTeam.LogoUrl,
-			HomeTeamScore:   fixture.HomeScore,
+			HomeTeamScore:   int(homeScore.Int64),
 			AwayTeamId:      fixture.AwayTeam.Id,
 			AwayTeamName:    fixture.AwayTeam.Name,
 			AwayTeamLogoUrl: fixture.AwayTeam.LogoUrl,
-			AwayTeamScore:   fixture.AwayScore,
+			AwayTeamScore:   int(awayScore.Int64),
+		}
+
+		fixtureView.HomeTeamWinner = false
+		fixtureView.AwayTeamWinner = false
+
+		if homeTeamWinner.Int64 == 1 {
+			fixtureView.HomeTeamWinner = true
+		}
+		if awayTeamWinner.Int64 == 1 {
+			fixtureView.AwayTeamWinner = true
 		}
 
 		byLeagueName, existByLeagueName := fixturesView[leagueName]
