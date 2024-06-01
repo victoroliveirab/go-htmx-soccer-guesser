@@ -60,6 +60,20 @@ const (
     `
 )
 
+var STATUS_MAP map[int]string
+var isStatusMapInit = false
+
+func initStatusMap() {
+	if isStatusMapInit {
+		return
+	}
+	STATUS_MAP = make(map[int]string)
+	STATUS_MAP[0] = "FIN"
+	STATUS_MAP[1] = "PST"
+	STATUS_MAP[2] = "PEN"
+	STATUS_MAP[3] = "NST"
+}
+
 func FromSQLFixtureToFixture(sqlFixture *SQLFixture) *Fixture {
 	var fixture Fixture
 	fixture.Id = sqlFixture.Id
@@ -113,4 +127,14 @@ func GetFixtureById(db *sql.DB, id int64) (*Fixture, error) {
 	fixture.AwayTeam = *awayTeam
 
 	return fixture, nil
+}
+
+func FixtureTranslateStatus(status int) string {
+	initStatusMap()
+
+	stringStatus, exists := STATUS_MAP[status]
+	if !exists {
+		return "UNK"
+	}
+	return stringStatus
 }
