@@ -14,8 +14,8 @@
                     <li id="fixtures-{{$leagueName}}-{{$round}}">
                         <ul role="list" id="fixtures-{{$leagueName}}-{{$round}}-list" class="flex flex-col">
                             {{ range . }}
-                            <li hx-get="/fixtures/{{.Id}}" hx-trigger="click" hx-target="#modal-wrapper"
-                                hx-swap="beforeend" id="fixture-{{$leagueName}}-{{$round}}"
+                            <li hx-get="/fixtures/{{.Id}}?modal=1" hx-trigger="click" hx-target="#modal-content"
+                                hx-swap="innerHTML" id="fixture-{{$leagueName}}-{{$round}}"
                                 class="p-3 bg-white flex gap-3 cursor-pointer border-y-gray-200 border-y -mt-[1px]">
                                 <div
                                     class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3">
@@ -65,8 +65,10 @@
     </div>
 </div>
 <div id="modal-wrapper"
-    class="hidden fixed top-0 left-0 right-0 bottom-0 text-white flex-col items-center justify-center">
-    <div id="modal-overlay" class="fixed h-full w-full bg-black opacity-0 transition-opacity"></div>
+    class="hidden fixed top-0 left-0 right-0 bottom-0 flex-col items-center justify-center">
+    <div id="modal-overlay" class="fixed h-full w-full bg-black opacity-0 transition-opacity z-20"></div>
+    <div id="modal-content" class="bg-white w-[calc(100%-2*2rem)] h-1/2 opacity-100 z-30 p-4">
+    </div>
 </div>
 {{ end }}
 
@@ -79,5 +81,5 @@
 {{ end }}
 
 {{ define "scripts" }}
-<!-- <script defer async src="/static/js/fixtures_modal.js"></script> -->
+<script defer async src="/static/js/fixtures-modal.js"></script>
 {{ end }}

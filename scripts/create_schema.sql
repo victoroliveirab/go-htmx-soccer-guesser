@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS Guesses (
     points INTEGER DEFAULT 0,
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
     updated_at INTEGER DEFAULT (strftime('%s', 'now')),
-    outcome TEXT NULL,
+    outcome TEXT,
     CHECK (outcome IN ('perfect', 'diff+winner', 'wg+winner', 'lg+winner', 'winner', 'draw', '1g+draw', 'opposite', 'diff+opposite', 'none' )),
     FOREIGN KEY (user_id) REFERENCES Users(id),
     FOREIGN KEY (group_id) REFERENCES Groups(id),

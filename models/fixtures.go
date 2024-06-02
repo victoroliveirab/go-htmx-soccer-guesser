@@ -32,7 +32,7 @@ type Fixture struct {
 	HomeTeam      Team
 	AwayTeam      Team
 	TimestampNumb int
-	Status        int
+	Status        string
 	Referee       string
 	HomeScore     int
 	AwayScore     int
@@ -47,14 +47,13 @@ const (
         SELECT fixture.id, fixture.league_id, league.name, league.logo_url,
                league.country, league.country_flag_url, fixture.season,
                fixture.home_team_id, home.name, home.logo_url,
-                fixture.away_team_id, away.name, away.logo_url,
+               fixture.away_team_id, away.name, away.logo_url,
                fixture.timestamp_numb, fixture.venue_id,
                fixture.status, fixture.referee, fixture.home_score,
                fixture.away_score, fixture.home_winner, fixture.away_winner,
                fixture.round, fixture.created_at, fixture.updated_at
         FROM Fixtures fixture
         JOIN Leagues league ON fixture.league_id = league.id
-        JOIN League_Seasons league_season ON fixture.league_season_id = league_season.id
         JOIN Teams home ON fixture.home_team_id = home.id
         JOIN Teams away ON fixture.away_team_id = away.id
     `
@@ -78,7 +77,7 @@ func FromSQLFixtureToFixture(sqlFixture *SQLFixture) *Fixture {
 	var fixture Fixture
 	fixture.Id = sqlFixture.Id
 	fixture.TimestampNumb = int(sqlFixture.TimestampNumb.Int64)
-	fixture.Status = sqlFixture.Status
+	fixture.Status = FixtureTranslateStatus(sqlFixture.Status)
 	fixture.Referee = sqlFixture.Referee.String
 	fixture.HomeScore = int(sqlFixture.HomeScore.Int64)
 	fixture.AwayScore = int(sqlFixture.AwayScore.Int64)

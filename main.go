@@ -49,7 +49,7 @@ func main() {
 	mux.Handle("POST /users", middlewares.WithNoAuth(user.Register))
 
 	// Fixtures
-	mux.Handle("GET /fixtures/{id}", middlewares.WithNoAuth(fixture.ViewFixture))
+	mux.Handle("GET /fixtures/{id}", middlewares.WithAuth(fixture.ViewFixture))
 	mux.Handle("GET /fixtures", middlewares.WithAuth(fixture.FixturesByDate))
 
 	// Index

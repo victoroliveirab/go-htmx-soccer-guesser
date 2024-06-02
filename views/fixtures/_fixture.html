@@ -1,0 +1,54 @@
+{{ block "fixture-information" . }}
+<div class="flex items-center justify-center gap-1 mb-6">
+    <div>
+        <img class="h-20 max-w-20" src="{{.Fixture.HomeTeam.LogoUrl}}">
+    </div>
+    <div class="text-3xl">
+        <p>
+            {{ if eq .Fixture.Status "FIN" }}
+            <span>{{.Fixture.HomeScore}}</span>
+            {{ end }}
+            x
+            {{ if eq .Fixture.Status "FIN" }}
+            <span>{{.Fixture.AwayScore}}</span>
+            {{ end }}
+        </p>
+    </div>
+    <div>
+        <img class="h-20 max-w-20" src="{{.Fixture.AwayTeam.LogoUrl}}">
+    </div>
+</div>
+<h2 class="text-lg">Your Guesses</h2>
+<ul class="flex flex-col gap-3">
+    {{ range .Guesses }}
+    <li>
+        <h3 class="mb-2">{{.GroupName}}</h3>
+        <div class="flex gap-3 border-y-gray-200 border-y -mt-[1px] py-3">
+            <div class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3">
+                13:00
+            </div>
+            <div class="flex-1 flex flex-col gap-1">
+                <div class="flex items-center flex-1 gap-1">
+                    <div class="w-8 flex justify-center">
+                        <img src="{{.Fixture.HomeTeam.LogoUrl}}" class="h-7 w-auto">
+                    </div>
+                    <div class="text-sm flex-1 flex justify-between">
+                        <p>{{.Fixture.HomeTeam.Name}}</p>
+                        <span>{{.HomeGoals}}</span>
+                    </div>
+                </div>
+                <div class="flex items-center flex-1 gap-1">
+                    <div class="w-8 flex justify-center">
+                        <img src="{{.Fixture.AwayTeam.LogoUrl}}" class="h-7 w-auto">
+                    </div>
+                    <div class="text-sm flex-1 flex justify-between">
+                        <p>{{.Fixture.AwayTeam.Name}}</p>
+                        <span>{{.AwayGoals}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+    {{ end }}
+</ul>
+{{ end }}

@@ -87,6 +87,7 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 	for rows.Next() {
 		empty = false
 		var fixture models.Fixture
+		var status int
 		var homeScore, awayScore sql.NullInt64
 		var homeTeamWinner, awayTeamWinner sql.NullInt64
 
@@ -96,7 +97,7 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 			&fixture.HomeTeam.Name, &fixture.HomeTeam.LogoUrl,
 			&fixture.AwayTeam.Id, &fixture.AwayTeam.Name,
 			&fixture.AwayTeam.LogoUrl, &fixture.TimestampNumb,
-			&fixture.Status, &fixture.Round, &homeScore,
+			&status, &fixture.Round, &homeScore,
 			&awayScore, &homeTeamWinner, &awayTeamWinner,
 		)
 
@@ -116,7 +117,7 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 			Id:              fixture.Id,
 			LeagueName:      fixture.League.Name,
 			Round:           fixture.Round,
-			Status:          models.FixtureTranslateStatus(fixture.Status),
+			Status:          models.FixtureTranslateStatus(status),
 			FormattedDate:   fmt.Sprintf("%s - %s", formattedDate, formattedTime),
 			FormattedTime:   formattedTime,
 			HomeTeamId:      fixture.HomeTeam.Id,
