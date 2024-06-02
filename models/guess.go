@@ -79,10 +79,11 @@ func GetGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error
 	for rows.Next() {
 		var guess Guess
 		var lockedInt int
+		var outcome sql.NullString
 		err := rows.Scan(
 			&guess.Id, &guess.GroupId, &guess.GroupName, &lockedInt,
 			&guess.HomeGoals, &guess.AwayGoals, &guess.Points,
-			&guess.CreatedAt, &guess.UpdatedAt, &guess.Outcome,
+			&guess.CreatedAt, &guess.UpdatedAt, &outcome,
 		)
 
 		if err != nil {
@@ -90,9 +91,7 @@ func GetGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error
 		}
 
 		guess.Locked = lockedInt == 1
-
-		fmt.Println(guess)
-		fmt.Println("=============")
+		guess.Outcome = outcome.String
 
 		guesses = append(guesses, &guess)
 	}

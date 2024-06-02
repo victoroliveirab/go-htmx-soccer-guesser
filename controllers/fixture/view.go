@@ -1,7 +1,6 @@
 package fixture
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"sync"
@@ -42,9 +41,6 @@ func getFixtureAndGuesses(fixtureId, userId int64) (*models.Fixture, []*models.G
 			errs <- err
 			return
 		}
-
-		fmt.Println("Status:")
-		fmt.Println(row.Status)
 
 		fixture = row
 	}()
