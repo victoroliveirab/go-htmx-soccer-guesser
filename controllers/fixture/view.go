@@ -22,7 +22,7 @@ func getFixtureAndGuesses(fixtureId, userId int64) (*models.Fixture, []*models.G
 	go func() {
 		defer wg.Done()
 
-		rows, err := models.GetGuessesByFixtureId(infra.Db, userId, fixtureId)
+		rows, err := models.GetPossibleGuessesByFixtureId(infra.Db, userId, fixtureId)
 
 		if err != nil {
 			errs <- err

@@ -41,7 +41,7 @@
                         {{ if .Locked }}
                         <span>{{.HomeGoals}}</span>
                         {{ else }}
-                        <input type="number" name="home-goals" min="0" max="9" value="0" class="w-4 text-right">
+                        <input type="number" name="home-goals" min="0" max="9" value="{{.HomeGoals}}" class="w-4 text-right">
                         {{ end }}
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                         {{ if .Locked }}
                         <span>{{.HomeGoals}}</span>
                         {{ else }}
-                        <input type="number" name="home-goals" min="0" max="9" value="0" class="w-4 text-right">
+                        <input type="number" name="home-goals" min="0" max="9" value="{{.AwayGoals}}" class="w-4 text-right">
                         {{ end }}
                     </div>
                 </div>
