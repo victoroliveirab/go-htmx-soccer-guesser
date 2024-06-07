@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"time"
 )
 
 type SQLGuess struct {
@@ -60,7 +61,7 @@ const (
             home.logo_url AS home_logo_url, fixture.away_team_id,
             away.name AS away_name, away.logo_url AS away_logo_url,
             fixture.home_score, fixture.away_score, fixture.home_winner,
-            fixture.away_winner,
+            fixture.away_winner, fixture.timestamp_numb,
             guess.id, guess.locked, guess.home_goals, guess.away_goals,
             guess.points, guess.created_at, guess.updated_at, guess.outcome
         FROM
@@ -115,6 +116,8 @@ func GetPossibleGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Gues
 
 	guesses := make([]*Guess, 0)
 
+	now := time.Now().Unix()
+
 	for rows.Next() {
 		var guess Guess
 		var guessId sql.NullInt64
@@ -135,7 +138,8 @@ func GetPossibleGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Gues
 			&guess.Fixture.HomeTeam.Name, &guess.Fixture.HomeTeam.LogoUrl,
 			&guess.Fixture.AwayTeam.Id, &guess.Fixture.AwayTeam.Name,
 			&guess.Fixture.AwayTeam.LogoUrl, &homeScore, &awayScore,
-			&homeWinner, &awayWinner, &guessId, &lockedInt, &guessHomeGoals,
+			&homeWinner, &awayWinner, &guess.Fixture.TimestampNumb,
+			&guessId, &lockedInt, &guessHomeGoals,
 			&guessAwayGoals, &sqlPoints, &sqlCreatedAt, &sqlUpdatedAt,
 			&outcome,
 		)
@@ -145,18 +149,25 @@ func GetPossibleGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Gues
 
 		guess.Id = int(guessId.Int64)
 		guess.UserId = int(userId)
-		guess.Locked = lockedInt.Int64 == 1
 		guess.HomeGoals = int(guessHomeGoals.Int64)
 		guess.AwayGoals = int(guessAwayGoals.Int64)
 		guess.Points = int(sqlPoints.Int64)
 		guess.CreatedAt = int(sqlCreatedAt.Int64)
 		guess.UpdatedAt = int(sqlUpdatedAt.Int64)
+		guess.Outcome = outcome.String
 
 		if homeWinner.Int64 == 1 {
 			guess.Fixture.Winner = "Home"
 		}
 		if awayWinner.Int64 == 1 {
 			guess.Fixture.Winner = "Away"
+		}
+
+		timestamp := guess.Fixture.TimestampNumb
+		if !guessId.Valid {
+			guess.Locked = now > int64(timestamp)
+		} else {
+			guess.Locked = lockedInt.Int64 == 1
 		}
 
 		guesses = append(guesses, &guess)
@@ -195,4 +206,17 @@ func GetGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error
 	}
 
 	return guesses, nil
+}
+
+func SaveGuess(db *sql.DB, guess *SQLGuess) (int64, error) {
+	row, err := db.Exec(
+		QUERY_INSERT_GUESS,
+		guess.GroupId, guess.FixtureId, 0, guess.HomeGoals, guess.AwayGoals,
+	)
+
+	if err != nil {
+		return -1, nil
+	}
+
+	return row.LastInsertId()
 }

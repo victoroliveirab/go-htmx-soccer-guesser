@@ -25,9 +25,10 @@
         <h3 class="mb-2">{{.GroupName}}</h3>
         <div class="flex gap-3 border-y-gray-200 border-y -mt-[1px] p-3">
             <div class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3 w-7">
-                {{ if ne .Outcome ""}}
-                <span class="{{if lt .Points 0}}text-red-500{{else if gt .Points 0}}text-green-500{{else}}text-gray-500{{end}}">
-                {{.Points}}
+                {{ if .Outcome }}
+                <span
+                    class="{{if lt .Points 0}}text-red-500{{else if gt .Points 0}}text-green-500{{else}}text-gray-500{{end}}">
+                    {{.Points}}
                 </span>
                 {{ end }}
             </div>
@@ -39,9 +40,14 @@
                     <div class="text-sm flex-1 flex justify-between">
                         <p>{{.Fixture.HomeTeam.Name}}</p>
                         {{ if .Locked }}
+                        {{ if .Id }}
                         <span>{{.HomeGoals}}</span>
                         {{ else }}
-                        <input type="number" name="home-goals" min="0" max="9" value="{{.HomeGoals}}" class="w-4 text-right">
+                        <span>N/A</span>
+                        {{ end }}
+                        {{ else }}
+                        <input type="number" name="home-goals" min="0" max="9" value="{{.HomeGoals}}"
+                            class="w-4 text-right">
                         {{ end }}
                     </div>
                 </div>
@@ -52,9 +58,14 @@
                     <div class="text-sm flex-1 flex justify-between">
                         <p>{{.Fixture.AwayTeam.Name}}</p>
                         {{ if .Locked }}
-                        <span>{{.HomeGoals}}</span>
+                        {{ if .Id }}
+                        <span>{{.AwayGoals}}</span>
                         {{ else }}
-                        <input type="number" name="home-goals" min="0" max="9" value="{{.AwayGoals}}" class="w-4 text-right">
+                        <span>N/A</span>
+                        {{ end }}
+                        {{ else }}
+                        <input type="number" name="home-goals" min="0" max="9" value="{{.AwayGoals}}"
+                            class="w-4 text-right">
                         {{ end }}
                     </div>
                 </div>
