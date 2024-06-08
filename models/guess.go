@@ -3,6 +3,8 @@ package models
 import (
 	"database/sql"
 	"time"
+
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/constants"
 )
 
 type SQLGuess struct {
@@ -16,7 +18,7 @@ type SQLGuess struct {
 	Points    int
 	CreatedAt int
 	UpdatedAt int
-	Outcome   string
+	Outcome   constants.Outcome
 }
 
 type Guess struct {
@@ -85,10 +87,17 @@ const (
         `
 )
 
+func normalizeOutcome(outcome sql.NullInt64) string {
+	if !outcome.Valid {
+		return "N/A"
+	}
+	return constants.Outcome(outcome.Int64).String()
+}
+
 func GetGuessById(db *sql.DB, id int64) *Guess {
 	var guess Guess
 	var lockedInt int
-	var outcome sql.NullString
+	var outcome sql.NullInt64
 	row := db.QueryRow("SELECT * FROM Guesses WHERE id = $1", id)
 	if err := row.Scan(
 		&guess.Id, &guess.UserId, &guess.GroupId, &lockedInt, &guess.HomeGoals,
@@ -99,7 +108,7 @@ func GetGuessById(db *sql.DB, id int64) *Guess {
 	}
 
 	guess.Locked = lockedInt == 1
-	guess.Outcome = outcome.String
+	guess.Outcome = normalizeOutcome(outcome)
 
 	return &guess
 }
@@ -126,7 +135,7 @@ func GetPossibleGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Gues
 		var homeWinner, awayWinner sql.NullInt64
 		var lockedInt sql.NullInt64
 		var sqlPoints, sqlCreatedAt, sqlUpdatedAt sql.NullInt64
-		var outcome sql.NullString
+		var outcome sql.NullInt64
 
 		guess.Fixture = &Fixture{
 			HomeTeam: Team{},
@@ -154,7 +163,7 @@ func GetPossibleGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Gues
 		guess.Points = int(sqlPoints.Int64)
 		guess.CreatedAt = int(sqlCreatedAt.Int64)
 		guess.UpdatedAt = int(sqlUpdatedAt.Int64)
-		guess.Outcome = outcome.String
+		guess.Outcome = normalizeOutcome(outcome)
 
 		if homeWinner.Int64 == 1 {
 			guess.Fixture.Winner = "Home"
@@ -188,7 +197,7 @@ func GetGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error
 	for rows.Next() {
 		var guess Guess
 		var lockedInt int
-		var outcome sql.NullString
+		var outcome sql.NullInt64
 		err := rows.Scan(
 			&guess.Id, &guess.GroupId, &guess.GroupName, &lockedInt,
 			&guess.HomeGoals, &guess.AwayGoals, &guess.Points,
@@ -200,8 +209,7 @@ func GetGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error
 		}
 
 		guess.Locked = lockedInt == 1
-		guess.Outcome = outcome.String
-
+		guess.Outcome = normalizeOutcome(outcome)
 		guesses = append(guesses, &guess)
 	}
 

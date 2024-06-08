@@ -1,72 +1,22 @@
 package lib
 
-import "github.com/victoroliveirab/go-htmx-soccer-guesser/models"
-
-type Outcome int
-
-const (
-	Perfect Outcome = iota
-	Opposite
-	DiffPlusWinner
-	DiffPlusOpposite
-	WinnerPlusWinnerGoals
-	WinnerPlusLoserGoals
-	Winner
-	Draw
-	OneGoalButDraw
-	None
+import (
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/constants"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 )
 
-func (outcome Outcome) String() string {
-	switch outcome {
-	case Perfect:
-		return "Perfect"
-	case Opposite:
-		return "Opposite"
-	case DiffPlusOpposite:
-		return "DiffPlusOpposite"
-	case DiffPlusWinner:
-		return "DiffPlusWinner"
-	case WinnerPlusWinnerGoals:
-		return "WinnerPlusWinnerGoals"
-	case WinnerPlusLoserGoals:
-		return "WinnerPlusLoserGoals"
-	case Winner:
-		return "Winner"
-	case Draw:
-		return "Draw"
-	case OneGoalButDraw:
-		return "OneGoalButDraw"
-	default:
-		return "None"
-	}
-}
-
-var DefaultPointsMap = map[Outcome]int{
-	Perfect:               20,
-	Opposite:              -10,
-	DiffPlusWinner:        15,
-	DiffPlusOpposite:      -5,
-	WinnerPlusWinnerGoals: 12,
-	WinnerPlusLoserGoals:  11,
-	Winner:                10,
-	Draw:                  15,
-	OneGoalButDraw:        4,
-	None:                  0,
-}
-
-func DefineOutcome(guess *models.Guess, fixture *models.Fixture) Outcome {
+func DefineOutcome(guess *models.Guess, fixture *models.Fixture) constants.Outcome {
 	guessedHg := guess.HomeGoals
 	guessedAg := guess.AwayGoals
 	actualHg := fixture.HomeScore
 	actualAg := fixture.AwayScore
 
 	if guessedHg == actualHg && guessedAg == actualAg {
-		return Perfect
+		return constants.Perfect
 	}
 
 	if guessedHg == actualAg && guessedAg == actualHg {
-		return Opposite
+		return constants.Opposite
 	}
 
 	hasHomeWon := actualHg > actualAg
@@ -77,11 +27,11 @@ func DefineOutcome(guess *models.Guess, fixture *models.Fixture) Outcome {
 	actualDiff := actualHg - actualAg
 
 	if guessedDiff == actualDiff && !hasTeamsDrawn {
-		return DiffPlusWinner
+		return constants.DiffPlusWinner
 	}
 
 	if guessedDiff*-1 == actualDiff && !hasTeamsDrawn {
-		return DiffPlusOpposite
+		return constants.DiffPlusOpposite
 	}
 
 	hasHomeWonOnGuess := guessedHg > guessedAg
@@ -89,40 +39,40 @@ func DefineOutcome(guess *models.Guess, fixture *models.Fixture) Outcome {
 	hasAwayWonOnGuess := guessedHg < guessedAg
 
 	if hasHomeWon && hasHomeWonOnGuess && guessedHg == actualHg {
-		return WinnerPlusWinnerGoals
+		return constants.WinnerPlusWinnerGoals
 	}
 
 	if hasAwayWon && hasAwayWonOnGuess && guessedAg == actualAg {
-		return WinnerPlusWinnerGoals
+		return constants.WinnerPlusWinnerGoals
 	}
 
 	if hasHomeWon && hasHomeWonOnGuess && guessedAg == actualAg {
-		return WinnerPlusLoserGoals
+		return constants.WinnerPlusLoserGoals
 	}
 
 	if hasAwayWon && hasAwayWonOnGuess && guessedHg == actualHg {
-		return WinnerPlusLoserGoals
+		return constants.WinnerPlusLoserGoals
 	}
 
 	if hasHomeWon && hasHomeWonOnGuess {
-		return Winner
+		return constants.Winner
 	}
 
 	if hasAwayWon && hasAwayWonOnGuess {
-		return Winner
+		return constants.Winner
 	}
 
 	if hasTeamsDrawn && hasDrawnOnGuess {
-		return Draw
+		return constants.Draw
 	}
 
 	if hasTeamsDrawn && guessedHg == actualHg {
-		return OneGoalButDraw
+		return constants.OneGoalButDraw
 	}
 
 	if hasTeamsDrawn && guessedAg == actualAg {
-		return OneGoalButDraw
+		return constants.OneGoalButDraw
 	}
 
-	return None
+	return constants.None
 }
