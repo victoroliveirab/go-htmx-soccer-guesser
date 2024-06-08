@@ -10,5 +10,8 @@ tailwindcss:
 bootstrap:
 	python3 cmd/bootstrap_db.py
 
+points:
+	go run ./cmd/generate_outcomes.go
+
 test:
 	go test -failfast ./...
