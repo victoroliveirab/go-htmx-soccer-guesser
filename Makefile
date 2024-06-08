@@ -9,3 +9,6 @@ tailwindcss:
 
 bootstrap:
 	python3 cmd/bootstrap_db.py
+
+test:
+	go test -failfast ./...
