@@ -1,0 +1,9 @@
+.htmx-indicator {
+    display: none;
+}
+.htmx-request > .htmx-indicator {
+    display: unset;
+}
+.htmx-request > .htmx-indicator ~ * {
+    display: none;
+}
