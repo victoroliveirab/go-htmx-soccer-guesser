@@ -83,6 +83,17 @@ for league_id, league_api_football_id, league_name, *_ in leagues_rows:
     with open(filename, "w", encoding="utf-8") as f:
         f.write(res.read().decode("utf-8"))
 
+    print(f"Requesting standings for league {league_name}")
+    client.request(
+        "GET",
+        f"/v3/standings?league={league_api_football_id}&season=2024",
+        headers=headers,
+    )
+    res = client.getresponse()
+    filename = os.path.join("json", f"standings-{league_name}-{str(NOW_TS)}.json")
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(res.read().decode("utf-8"))
+
 # 2- Read each file and store the contents in DB
 
 for json_file in files:
