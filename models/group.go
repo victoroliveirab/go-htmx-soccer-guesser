@@ -6,6 +6,7 @@ type Group struct {
 	Id              int
 	Name            string
 	Description     string
+	PointsTable     string
 	NumberOfMembers int
 }
 
@@ -13,7 +14,9 @@ type GroupWithParticipants struct {
 	Id          int
 	Name        string
 	Description string
-	Users       []*User
+	PointsTable string
+	// TODO: change to members
+	Users []*User
 }
 
 var groupWithParticipantsQuery = `
