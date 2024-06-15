@@ -24,6 +24,6 @@ node_modules
 .env.production
 tmp/
 static/css/styles.css
-*.db
+*.db*
 .DS_Store
 json/
