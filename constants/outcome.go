@@ -15,29 +15,25 @@ const (
 	None
 )
 
+var OutcomesMap = map[Outcome]string{
+	Perfect:               "Perfect",
+	Opposite:              "Opposite",
+	DiffPlusWinner:        "DiffPlusWinner",
+	DiffPlusOpposite:      "DiffPlusOpposite",
+	WinnerPlusWinnerGoals: "WinnerPlusWinnerGoals",
+	WinnerPlusLoserGoals:  "WinnerPlusLoserGoals",
+	Winner:                "Winner",
+	Draw:                  "Draw",
+	OneGoalButDraw:        "OneGoalButDraw",
+	None:                  "None",
+}
+
 func (outcome Outcome) String() string {
-	switch outcome {
-	case Perfect:
-		return "Perfect"
-	case Opposite:
-		return "Opposite"
-	case DiffPlusOpposite:
-		return "Difference + Opposite"
-	case DiffPlusWinner:
-		return "Difference + Winner"
-	case WinnerPlusWinnerGoals:
-		return "Winner + Winner Goals"
-	case WinnerPlusLoserGoals:
-		return "Winner + Loser Goals"
-	case Winner:
-		return "Winner"
-	case Draw:
-		return "Draw"
-	case OneGoalButDraw:
-		return "One-side Goal, but Draw"
-	default:
-		return "None"
+	str, exists := OutcomesMap[outcome]
+	if !exists {
+		return None.String()
 	}
+	return str
 }
 
 var DefaultOutcomePointsMap = map[Outcome]int{
