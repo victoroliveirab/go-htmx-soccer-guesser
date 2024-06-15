@@ -6,15 +6,15 @@ type Group struct {
 	Id              int
 	Name            string
 	Description     string
-	PointsTable     string
+	RawPointsTable  string
 	NumberOfMembers int
 }
 
 type GroupWithParticipants struct {
-	Id          int
-	Name        string
-	Description string
-	PointsTable string
+	Id             int
+	Name           string
+	Description    string
+	RawPointsTable string
 	// TODO: change to members
 	Users []*User
 }
