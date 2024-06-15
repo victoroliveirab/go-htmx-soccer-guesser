@@ -66,23 +66,16 @@
 {{ block "page-header" . }}
 <div class="flex items-center justify-between mb-2 w-full" hx-boost="true">
     <button hx-get="/fixtures?date={{.PrevDate}}" hx-target="body" hx-swap="innerHTML transition:true"
-        hx-disabled-elt="a, button" role="link">
+        hx-disabled-elt="a, button" hx-push-url="true" role="link">
         <img src="/static/img/spinner.svg" class="w-4 inline fill-black htmx-indicator">
         <span class="inline-block w-4">&larr;</span>
     </button>
-    <!-- <a href="/fixtures?date={{.PrevDate}}" hx-swap="innerHTML transition:true" hx-disabled-elt="this" class="bg-green-500 disabled:bg-red-500"> -->
-    <!--     <img src="/static/img/spinner.svg" class="w-4 inline fill-black htmx-indicator"> -->
-    <!--     <span class="inline-block w-4">&larr;</span> -->
-    <!-- </a> -->
     <h1>Fixtures - <span class="text-xs">{{.Date}}</span></h1>
     <button hx-get="/fixtures?date={{.NextDate}}" hx-target="body" hx-swap="innerHTML transition:true"
-        hx-disabled-elt="a, button" role="link">
+        hx-disabled-elt="a, button" hx-push-url="true" role="link">
         <img src="/static/img/spinner.svg" class="w-4 inline fill-black htmx-indicator">
         <span class="inline-block w-4">&rarr;</span>
     </button>
-</div>
-<div>
-    <a href="/" disabled class="bg-sky-500 disabled:bg-indigo-500">Home</a>
 </div>
 {{ end }}
 
