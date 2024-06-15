@@ -3,7 +3,6 @@ package infra
 import (
 	"database/sql"
 	"fmt"
-	"os"
 	"time"
 
 	_ "github.com/tursodatabase/go-libsql"
@@ -12,26 +11,23 @@ import (
 var Db *sql.DB
 var maxRetries = 5
 
-func DbConnect(url string) {
+func DbConnect(url string) error {
 	db, err := sql.Open("libsql", url)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to open db %s: %s", url, err)
-		os.Exit(1)
+		return fmt.Errorf("failed to open db %s: %w", url, err)
 	}
 
 	var journalMode string
-	// Enable WAL Mode
 	err = db.QueryRow("PRAGMA journal_mode=WAL;").Scan(&journalMode)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to enable WAL mode: %s", err)
-		os.Exit(1)
+		return fmt.Errorf("failed to enable WAL mode: %w", err)
 	}
 	if journalMode != "wal" {
-		fmt.Fprintf(os.Stderr, "failed to set WAL mode, current mode = %s", journalMode)
-		os.Exit(1)
+		return fmt.Errorf("failed to set WAL mode, current mode = %s", journalMode)
 	}
 
 	Db = db
+	return nil
 }
 
 func DbExecuteWithRetry(queryFunc func() error) error {
