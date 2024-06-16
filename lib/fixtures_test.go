@@ -1,9 +1,11 @@
-package lib
+package lib_test
 
 import (
 	"fmt"
 	"testing"
 
+	c "github.com/victoroliveirab/go-htmx-soccer-guesser/constants"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 )
 
@@ -38,13 +40,13 @@ func TestDefineOutcomeBothTeamsScored(t *testing.T) {
 		Round:         "Regular Season - 7",
 	}
 
-	outcomes := [...]Outcome{
-		None, None, None, DiffPlusOpposite, None, None,
-		Winner, None, None, None, Opposite, None,
-		Winner, WinnerPlusLoserGoals, None, None, None, DiffPlusOpposite,
-		DiffPlusWinner, WinnerPlusLoserGoals, Winner, None, None, None,
-		WinnerPlusWinnerGoals, Perfect, WinnerPlusWinnerGoals, WinnerPlusWinnerGoals, None, None,
-		Winner, WinnerPlusLoserGoals, DiffPlusWinner, Winner, Winner, None,
+	outcomes := [...]c.Outcome{
+		c.None, c.None, c.None, c.DiffPlusOpposite, c.None, c.None,
+		c.Winner, c.None, c.None, c.None, c.Opposite, c.None,
+		c.Winner, c.WinnerPlusLoserGoals, c.None, c.None, c.None, c.DiffPlusOpposite,
+		c.DiffPlusWinner, c.WinnerPlusLoserGoals, c.Winner, c.None, c.None, c.None,
+		c.WinnerPlusWinnerGoals, c.Perfect, c.WinnerPlusWinnerGoals, c.WinnerPlusWinnerGoals, c.None, c.None,
+		c.Winner, c.WinnerPlusLoserGoals, c.DiffPlusWinner, c.Winner, c.Winner, c.None,
 	}
 
 	for index, possibility := range possibilities {
@@ -54,7 +56,7 @@ func TestDefineOutcomeBothTeamsScored(t *testing.T) {
 		}
 		t.Run(fmt.Sprintf("Both Teams Scored - 4x1 - Guess %dx%d", guess.HomeGoals, guess.AwayGoals), func(t *testing.T) {
 			expectedOutcome := outcomes[index]
-			actualOutcome := DefineOutcome(&guess, &fixture)
+			actualOutcome := lib.DefineOutcome(&guess, &fixture)
 			if expectedOutcome != actualOutcome {
 				t.Errorf("Expected outcome %s, actually got %s", expectedOutcome, actualOutcome)
 			}
@@ -84,13 +86,13 @@ func TestDefineOutcomeOnlyWinnerScored(t *testing.T) {
 		Round:         "Regular Season - 7",
 	}
 
-	outcomes := [...]Outcome{
-		None, WinnerPlusLoserGoals, Perfect, WinnerPlusLoserGoals, WinnerPlusLoserGoals, WinnerPlusLoserGoals,
-		None, None, WinnerPlusWinnerGoals, DiffPlusWinner, Winner, Winner,
-		Opposite, None, None, Winner, DiffPlusWinner, Winner,
-		None, DiffPlusOpposite, None, None, Winner, DiffPlusWinner,
-		None, None, DiffPlusOpposite, None, None, Winner,
-		None, None, None, DiffPlusOpposite, None, None,
+	outcomes := [...]c.Outcome{
+		c.None, c.WinnerPlusLoserGoals, c.Perfect, c.WinnerPlusLoserGoals, c.WinnerPlusLoserGoals, c.WinnerPlusLoserGoals,
+		c.None, c.None, c.WinnerPlusWinnerGoals, c.DiffPlusWinner, c.Winner, c.Winner,
+		c.Opposite, c.None, c.None, c.Winner, c.DiffPlusWinner, c.Winner,
+		c.None, c.DiffPlusOpposite, c.None, c.None, c.Winner, c.DiffPlusWinner,
+		c.None, c.None, c.DiffPlusOpposite, c.None, c.None, c.Winner,
+		c.None, c.None, c.None, c.DiffPlusOpposite, c.None, c.None,
 	}
 
 	for index, possibility := range possibilities {
@@ -100,7 +102,7 @@ func TestDefineOutcomeOnlyWinnerScored(t *testing.T) {
 		}
 		t.Run(fmt.Sprintf("Only Winner Scored - 0x2 - Guess %dx%d", guess.HomeGoals, guess.AwayGoals), func(t *testing.T) {
 			expectedOutcome := outcomes[index]
-			actualOutcome := DefineOutcome(&guess, &fixture)
+			actualOutcome := lib.DefineOutcome(&guess, &fixture)
 			if expectedOutcome != actualOutcome {
 				t.Errorf("Expected outcome %s, actually got %s", expectedOutcome, actualOutcome)
 			}
@@ -130,13 +132,13 @@ func TestDefineOutcomeDraw(t *testing.T) {
 		Round:         "Regular Season - 7",
 	}
 
-	outcomes := [...]Outcome{
-		Draw, None, None, OneGoalButDraw, None, None,
-		None, Draw, None, OneGoalButDraw, None, None,
-		None, None, Draw, OneGoalButDraw, None, None,
-		OneGoalButDraw, OneGoalButDraw, OneGoalButDraw, Perfect, OneGoalButDraw, OneGoalButDraw,
-		None, None, None, OneGoalButDraw, Draw, None,
-		None, None, None, OneGoalButDraw, None, Draw,
+	outcomes := [...]c.Outcome{
+		c.Draw, c.None, c.None, c.OneGoalButDraw, c.None, c.None,
+		c.None, c.Draw, c.None, c.OneGoalButDraw, c.None, c.None,
+		c.None, c.None, c.Draw, c.OneGoalButDraw, c.None, c.None,
+		c.OneGoalButDraw, c.OneGoalButDraw, c.OneGoalButDraw, c.Perfect, c.OneGoalButDraw, c.OneGoalButDraw,
+		c.None, c.None, c.None, c.OneGoalButDraw, c.Draw, c.None,
+		c.None, c.None, c.None, c.OneGoalButDraw, c.None, c.Draw,
 	}
 
 	for index, possibility := range possibilities {
@@ -146,7 +148,7 @@ func TestDefineOutcomeDraw(t *testing.T) {
 		}
 		t.Run(fmt.Sprintf("Draw - 3x3 - Guess %dx%d", guess.HomeGoals, guess.AwayGoals), func(t *testing.T) {
 			expectedOutcome := outcomes[index]
-			actualOutcome := DefineOutcome(&guess, &fixture)
+			actualOutcome := lib.DefineOutcome(&guess, &fixture)
 			if expectedOutcome != actualOutcome {
 				t.Errorf("Expected outcome %s, actually got %s", expectedOutcome, actualOutcome)
 			}
