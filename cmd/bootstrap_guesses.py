@@ -13,21 +13,6 @@ def random_number_of_goals():
     return random.choices(OUTCOMES, GOALS_PROBABILITIES)[0]
 
 
-# This should come from the groups table, but for now let's do this way
-POINTS = {
-    "perfect": 20,
-    "diff+winner": 15,
-    "wg+winner": 12,
-    "lg+winner": 11,
-    "winner": 10,
-    "draw": 15,
-    "1g+draw": 4,
-    "opposite": -10,
-    "diff+opposite": -5,
-    "none": 0,
-}
-
-
 DB_FILE = "local.db"
 
 conn = sqlite3.connect(DB_FILE)

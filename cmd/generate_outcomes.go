@@ -96,6 +96,11 @@ func main() {
 		i++
 	}
 
+	if i == 0 {
+		log.Printf("nothing to update")
+		return
+	}
+
 	err = tx.Commit()
 
 	if err != nil {
