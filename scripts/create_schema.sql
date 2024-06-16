@@ -48,9 +48,13 @@ CREATE TABLE IF NOT EXISTS Groups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     description TEXT,
+    admin INTEGER NOT NULL,
     points_table TEXT NOT NULL,
+    ranking TEXT NOT NULL,
+    ranking_up_to_date INTEGER DEFAULT 0,
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
-    updated_at INTEGER DEFAULT (strftime('%s', 'now'))
+    updated_at INTEGER DEFAULT (strftime('%s', 'now')),
+    FOREIGN KEY (admin) REFERENCES Users(id)
 );
 
 CREATE TABLE IF NOT EXISTS User_Groups (
@@ -98,6 +102,7 @@ CREATE TABLE IF NOT EXISTS Guesses (
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
     updated_at INTEGER DEFAULT (strftime('%s', 'now')),
     outcome INTEGER,
+    counted INTEGER DEFAULT 0,
     CHECK (outcome BETWEEN 0 AND 9)
     FOREIGN KEY (user_id) REFERENCES Users(id),
     FOREIGN KEY (group_id) REFERENCES Groups(id),

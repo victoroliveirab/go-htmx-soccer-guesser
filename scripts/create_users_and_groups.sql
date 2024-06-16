@@ -7,10 +7,10 @@ INSERT INTO Users (username, name, email, password_hash) VALUES
 ('victoroliveirab', 'Victor Oliveira', 'eu@victoroliveira.com.br', 'z4QVaSQT3u0Q/EQ33vbHFw==:ZWLxUg0P/xeBTSItizg1Zq7P1vTy3cg4kxEK83oK2CA=');
 
 -- Insert Groups
-INSERT INTO Groups (name, description, points_table) VALUES
-('Group A', 'Description for Group A', '{"Perfect":18,"Opposite":-8,"DiffPlusWinner":15,"DiffPlusOpposite":0,"WinnerPlusWinnerGoals":12,"WinnerPlusLoserGoals":11,"Winner":10,"Draw":15,"OneGoalButDraw":0,"None":0}'),
-('Group B', 'Description for Group B', '{"Perfect":20,"Opposite":-10,"DiffPlusWinner":15,"DiffPlusOpposite":-5,"WinnerPlusWinnerGoals":12,"WinnerPlusLoserGoals":11,"Winner":10,"Draw":15,"OneGoalButDraw":4,"None":0}'),
-('My Private Group', 'Group for me to do my private guesses', '{"Perfect":20,"Opposite":-10,"DiffPlusWinner":15,"DiffPlusOpposite":-5,"WinnerPlusWinnerGoals":12,"WinnerPlusLoserGoals":11,"Winner":10,"Draw":15,"OneGoalButDraw":4,"None":0}');
+INSERT INTO Groups (admin, name, description, points_table, ranking) VALUES
+(1, 'Group A', 'Description for Group A', '{"Perfect":18,"Opposite":-8,"DiffPlusWinner":15,"DiffPlusOpposite":0,"WinnerPlusWinnerGoals":12,"WinnerPlusLoserGoals":11,"Winner":10,"Draw":15,"OneGoalButDraw":0,"None":0}', '{"1":0,"2":0,"5":0}'),
+(1, 'Group B', 'Description for Group B', '{"Perfect":20,"Opposite":-10,"DiffPlusWinner":15,"DiffPlusOpposite":-5,"WinnerPlusWinnerGoals":12,"WinnerPlusLoserGoals":11,"Winner":10,"Draw":15,"OneGoalButDraw":4,"None":0}', '{"1":0,"3":0}'),
+(5, 'My Private Group', 'Group for me to do my private guesses', '{"Perfect":20,"Opposite":-10,"DiffPlusWinner":15,"DiffPlusOpposite":-5,"WinnerPlusWinnerGoals":12,"WinnerPlusLoserGoals":11,"Winner":10,"Draw":15,"OneGoalButDraw":4,"None":0}', '{"5":0}');
 
 -- Assign Users to Groups
 -- User 1 is part of both Group A and Group B
