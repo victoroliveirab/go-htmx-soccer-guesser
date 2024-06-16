@@ -1,58 +1,11 @@
 {{ define "children" }}
 <div class="flex flex-col items-center mx-auto h-[calc(100%-56px-2rem)]">
-    {{ template "page-header" .}}
+    {{ template "page-header" . }}
     <div class="flex flex-col w-full max-h-full">
         {{ if .NoMatches }}
         <p class="text-center">Sorry, no matches found this day :/</p>
         {{ else }}
-        <ul class="flex flex-col gap-4 w-full sm:max-w-sm">
-            {{ range $leagueName, $fixturesByLeague := .FixturesViewMap }}
-            <li id="fixtures-{{$leagueName}}" class="flex flex-col gap-2">
-                <h3>{{$leagueName}}</h3>
-                <ul id="fixtures-{{$leagueName}}-list">
-                    {{ range . }}
-                    <li hx-get="/fixtures/{{.Id}}?modal=1" hx-trigger="click" hx-target="#modal-content"
-                        hx-swap="innerHTML" id="fixture-{{$leagueName}}-{{.Id}}"
-                        class="p-3 bg-white flex gap-3 cursor-pointer border-y-gray-200 border-y -mt-[1px]">
-                        <div
-                            class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3">
-                            {{.FormattedTime}}
-                        </div>
-                        <div class="flex-1 flex flex-col gap-1">
-                            <div class="flex items-center flex-1 gap-1">
-                                <div class="w-8 flex justify-center">
-                                    <img src="{{.HomeTeamLogoUrl}}" alt="Logo of {{.HomeTeamName}}" class="h-7 w-auto">
-                                </div>
-                                <div class="text-sm flex-1 flex justify-between">
-                                    <p>{{.HomeTeamName}}</p>
-                                    {{ if eq .Status "FIN" }}
-                                    <span>{{.HomeTeamScore}}</span>
-                                    {{ end }}
-                                </div>
-                            </div>
-                            <div class="flex items-center flex-1 gap-1">
-                                <div class="w-8 flex justify-center">
-                                    <img src="{{.AwayTeamLogoUrl}}" alt="Logo of {{.AwayTeamName}}" class="h-7 w-auto">
-                                </div>
-                                <div class="text-sm flex-1 flex justify-between">
-                                    <p>{{.AwayTeamName}}</p>
-                                    {{ if eq .Status "FIN" }}
-                                    <span>{{.AwayTeamScore}}</span>
-                                    {{ end }}
-                                </div>
-                            </div>
-                        </div>
-                        {{ if eq .Status "PST"}}
-                        <div class="flex items-center text-sm text-gray-500">
-                            PST
-                        </div>
-                        {{ end }}
-                    </li>
-                    {{ end }}
-                </ul>
-            </li>
-            {{end}}
-        </ul>
+        {{ template "fixtures-list" . }}
         {{ end }}
     </div>
 </div>
@@ -77,6 +30,59 @@
         <span class="inline-block w-4">&rarr;</span>
     </button>
 </div>
+{{ end }}
+
+{{ block "fixtures-list" . }}
+<ul class="flex flex-col gap-4 w-full sm:max-w-sm">
+    {{ range $leagueName, $leagueInfo := .FixturesViewMap }}
+    <li id="fixtures-{{$leagueName}}" class="flex flex-col gap-2">
+        <a href="/leagues/{{$leagueInfo.Id}}" hx-boost="true">
+            <h3>{{$leagueName}}</h3>
+        </a>
+        <ul id="fixtures-{{$leagueName}}-list">
+            {{ range .Fixtures }}
+            <li hx-get="/fixtures/{{.Id}}?modal=1" hx-trigger="click" hx-target="#modal-content" hx-swap="innerHTML"
+                id="fixture-{{$leagueName}}-{{.Id}}"
+                class="p-3 bg-white flex gap-3 cursor-pointer border-y-gray-200 border-y -mt-[1px]">
+                <div class="text-xs text-gray-500 flex items-center border border-transparent border-r-green-50 pr-3">
+                    {{.FormattedTime}}
+                </div>
+                <div class="flex-1 flex flex-col gap-1">
+                    <div class="flex items-center flex-1 gap-1">
+                        <div class="w-8 flex justify-center">
+                            <img src="{{.HomeTeamLogoUrl}}" alt="Logo of {{.HomeTeamName}}" class="h-7 w-auto">
+                        </div>
+                        <div class="text-sm flex-1 flex justify-between">
+                            <p>{{.HomeTeamName}}</p>
+                            {{ if eq .Status "FIN" }}
+                            <span>{{.HomeTeamScore}}</span>
+                            {{ end }}
+                        </div>
+                    </div>
+                    <div class="flex items-center flex-1 gap-1">
+                        <div class="w-8 flex justify-center">
+                            <img src="{{.AwayTeamLogoUrl}}" alt="Logo of {{.AwayTeamName}}" class="h-7 w-auto">
+                        </div>
+                        <div class="text-sm flex-1 flex justify-between">
+                            <p>{{.AwayTeamName}}</p>
+                            {{ if eq .Status "FIN" }}
+                            <span>{{.AwayTeamScore}}</span>
+                            {{ end }}
+                        </div>
+                    </div>
+                </div>
+                {{ if eq .Status "PST"}}
+                <div class="flex items-center text-sm text-gray-500">
+                    PST
+                </div>
+                {{ end }}
+            </li>
+            {{ end }}
+        </ul>
+    </li>
+    {{end}}
+</ul>
+
 {{ end }}
 
 {{ define "scripts" }}

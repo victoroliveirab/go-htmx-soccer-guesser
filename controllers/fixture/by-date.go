@@ -34,7 +34,11 @@ type FixtureView struct {
 type DateKey string
 type LeagueNameKey string
 type RoundKey string
-type FixtureMap map[LeagueNameKey][]FixtureView
+type LeagueInfo struct {
+	Id       int
+	Fixtures []FixtureView
+}
+type FixtureMap map[LeagueNameKey]LeagueInfo
 
 // Date in format YYYY-mm-dd
 var dateRegex = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}$`)
@@ -108,7 +112,6 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 
 		datetime := time.Unix(int64(fixture.TimestampNumb), 0)
 		var formattedDate DateKey = DateKey(datetime.Format("02/01/2006"))
-		fmt.Println(formattedDate)
 		formattedTime := datetime.Format("15:04")
 		leagueName := LeagueNameKey(fixture.League.Name)
 
@@ -141,15 +144,16 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 
 		byLeagueName, existByLeagueName := fixturesView[leagueName]
 		if !existByLeagueName {
-			fixturesView[leagueName] = make(
-				[]FixtureView,
-				0,
-			)
+			leagueInfo := LeagueInfo{
+				Id:       fixture.League.Id,
+				Fixtures: make([]FixtureView, 0),
+			}
+			fixturesView[leagueName] = leagueInfo
 			byLeagueName = fixturesView[leagueName]
 		}
 
-		byLeagueName = append(
-			byLeagueName,
+		byLeagueName.Fixtures = append(
+			byLeagueName.Fixtures,
 			fixtureView,
 		)
 		fixturesView[leagueName] = byLeagueName
