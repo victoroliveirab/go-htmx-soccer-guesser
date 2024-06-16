@@ -9,9 +9,11 @@ tailwindcss:
 
 bootstrap:
 	python3 cmd/bootstrap_db.py
+	python3 cmd/bootstrap_guesses.py
 
 points:
 	go run ./cmd/generate_outcomes.go
+	go run ./cmd/update_group_ranking.go
 
 test:
 	go test -v -failfast ./...
