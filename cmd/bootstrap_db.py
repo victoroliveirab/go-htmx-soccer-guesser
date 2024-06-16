@@ -23,6 +23,8 @@ USER_GROUP_FILE = "scripts/create_users_and_groups.sql"
 LEAGUES_FILE = "scripts/create_leagues.sql"
 
 os.rename(DB_FILE, f"backup-{NOW_TS}.db")
+os.remove(f"{DB_FILE}-shm")
+os.remove(f"{DB_FILE}-wal")
 
 conn = sqlite3.connect(DB_FILE)
 cursor = conn.cursor()
