@@ -30,7 +30,7 @@ fixtures = [
         "away_score": f_as,
         "timestamp_numb": f_ts,
     }
-    for f_id, _, _, _, _, _, f_ts, _, f_status, _, f_hs, f_as, *_ in fixture_rows
+    for f_id, _, _, _, _, f_ts, _, f_status, _, f_hs, f_as, *_ in fixture_rows
 ]
 
 # 2- Get all users and groups

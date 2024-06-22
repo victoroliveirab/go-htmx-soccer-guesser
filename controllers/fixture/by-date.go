@@ -66,12 +66,13 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 	endTime := endOfDay.Add(3 * time.Hour).Unix()
 
 	query := `
-        SELECT f.id, f.league_id, le.name, f.season, f.home_team_id,
+        SELECT f.id, ls.league_id, le.name, ls.season, f.home_team_id,
         ho.name, ho.logo_url, f.away_team_id, aw.name, aw.logo_url,
         f.timestamp_numb, f.status, f.round,
         f.home_score, f.away_score, f.home_winner, f.away_winner
         FROM Fixtures f
-        JOIN Leagues le ON f.league_id = le.id
+        JOIN Leagues_Seasons ls ON f.league_season_id = ls.id
+        JOIN Leagues le ON ls.league_id = le.id
         JOIN Teams ho ON f.home_team_id = ho.id
         JOIN Teams aw ON f.away_team_id = aw.id
         WHERE timestamp_numb BETWEEN ? AND ?

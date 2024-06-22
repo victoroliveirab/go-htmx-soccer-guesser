@@ -179,15 +179,14 @@ for json_file in files:
             cursor.execute(
                 """
                 INSERT INTO Fixtures(
-                api_football_id, league_id, season, home_team_id,
+                api_football_id, league_season_id, home_team_id,
                 away_team_id, timestamp_numb, venue_id, status, referee,
                 home_score, away_score, home_winner, away_winner, round
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     fixture["id"],
-                    league_id,
-                    season,
+                    league_id,  # will be the same as league_season_id during bootstrap
                     home_team_id,
                     away_team_id,
                     timestamp_numb,

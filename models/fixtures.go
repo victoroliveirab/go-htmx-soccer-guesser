@@ -6,23 +6,22 @@ import (
 )
 
 type SQLFixture struct {
-	Id            int
-	ApiFootballId int
-	LeagueId      sql.NullInt64
-	Season        sql.NullInt64
-	HomeTeamId    int
-	AwayTeamId    int
-	TimestampNumb sql.NullInt64
-	VenueId       sql.NullInt64
-	Status        int
-	Referee       sql.NullString
-	HomeScore     sql.NullInt64
-	AwayScore     sql.NullInt64
-	HomeWinner    sql.NullInt64
-	AwayWinner    sql.NullInt64
-	Round         sql.NullString
-	CreatedAt     int
-	UpdatedAt     int
+	Id             int
+	ApiFootballId  int
+	LeagueSeasonId sql.NullInt64
+	HomeTeamId     int
+	AwayTeamId     int
+	TimestampNumb  sql.NullInt64
+	VenueId        sql.NullInt64
+	Status         int
+	Referee        sql.NullString
+	HomeScore      sql.NullInt64
+	AwayScore      sql.NullInt64
+	HomeWinner     sql.NullInt64
+	AwayWinner     sql.NullInt64
+	Round          sql.NullString
+	CreatedAt      int
+	UpdatedAt      int
 }
 
 type Fixture struct {
@@ -44,8 +43,8 @@ type Fixture struct {
 
 const (
 	QUERY_GET_COMPLETE_FIXTURE = `
-        SELECT fixture.id, fixture.league_id, league.name, league.logo_url,
-               league.country, league.country_flag_url, fixture.season,
+        SELECT fixture.id, league_season.league_id, league.name, league.logo_url,
+               league.country, league.country_flag_url, league_season.season,
                fixture.home_team_id, home.name, home.logo_url,
                fixture.away_team_id, away.name, away.logo_url,
                fixture.timestamp_numb, fixture.venue_id,
@@ -53,7 +52,8 @@ const (
                fixture.away_score, fixture.home_winner, fixture.away_winner,
                fixture.round, fixture.created_at, fixture.updated_at
         FROM Fixtures fixture
-        JOIN Leagues league ON fixture.league_id = league.id
+        JOIN Leagues_Seasons league_season ON league_season.id = fixture.league_season_id
+        JOIN Leagues league ON league_season.league_id = league.id
         JOIN Teams home ON fixture.home_team_id = home.id
         JOIN Teams away ON fixture.away_team_id = away.id
     `
@@ -99,12 +99,12 @@ func GetFixtureById(db *sql.DB, id int64) (*Fixture, error) {
 	row := db.QueryRow(query, id)
 	var sqlFixture SQLFixture
 	var league SQLLeague
+	var season int
 	var sqlHomeTeam SQLTeam
 	var sqlAwayTeam SQLTeam
 	err := row.Scan(
-		&sqlFixture.Id, &sqlFixture.LeagueId, &league.Name, &league.LogoUrl,
-		&league.Country, &league.CountryFlagUrl, &sqlFixture.Season,
-		&sqlFixture.HomeTeamId,
+		&sqlFixture.Id, &sqlFixture.LeagueSeasonId, &league.Name, &league.LogoUrl,
+		&league.Country, &league.CountryFlagUrl, &season, &sqlFixture.HomeTeamId,
 		&sqlHomeTeam.Name, &sqlHomeTeam.LogoUrl, &sqlFixture.AwayTeamId,
 		&sqlAwayTeam.Name, &sqlAwayTeam.LogoUrl, &sqlFixture.TimestampNumb,
 		&sqlFixture.VenueId, &sqlFixture.Status,
@@ -124,6 +124,7 @@ func GetFixtureById(db *sql.DB, id int64) (*Fixture, error) {
 	fixture := FromSQLFixtureToFixture(&sqlFixture)
 	fixture.HomeTeam = *homeTeam
 	fixture.AwayTeam = *awayTeam
+	fixture.Season = season
 
 	return fixture, nil
 }

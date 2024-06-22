@@ -19,6 +19,14 @@ CREATE TABLE IF NOT EXISTS Leagues (
   meta TEXT
 );
 
+CREATE TABLE IF NOT EXISTS Leagues_Seasons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    league_id INTEGER NOT NULL,
+    season INTEGER NOT NULL,
+    standings TEXT,
+    FOREIGN KEY (league_id) REFERENCES Leagues(id)
+);
+
 CREATE TABLE IF NOT EXISTS Venues (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   api_football_id INTEGER NOT NULL UNIQUE,
@@ -69,8 +77,7 @@ CREATE TABLE IF NOT EXISTS User_Groups (
 CREATE TABLE IF NOT EXISTS Fixtures (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     api_football_id INTEGER NOT NULL,
-    league_id INTEGER,
-    season INTEGER,
+    league_season_id INTEGER,
     home_team_id INTEGER NOT NULL,
     away_team_id INTEGER NOT NULL,
     timestamp_numb INTEGER,
@@ -84,7 +91,7 @@ CREATE TABLE IF NOT EXISTS Fixtures (
     round TEXT,
     created_at INTEGER DEFAULT (strftime('%s', 'now')),
     updated_at INTEGER DEFAULT (strftime('%s', 'now')),
-    FOREIGN KEY (league_id) REFERENCES Leagues(id),
+    FOREIGN KEY (league_season_id) REFERENCES Leagues_Seasons(id),
     FOREIGN KEY (home_team_id) REFERENCES Teams(id),
     FOREIGN KEY (away_team_id) REFERENCES Teams(id),
     FOREIGN KEY (venue_id) REFERENCES Venues(id)
