@@ -44,6 +44,12 @@ func RegisterTemplates() {
 			// "views/guesses/fixture-modal.html",
 		),
 	)
+	templates["leagues/show.html"] = template.Must(
+		template.ParseFiles(
+			"views/base.html",
+			"views/leagues/show.html",
+		),
+	)
 }
 
 func RenderTemplate(w http.ResponseWriter, r *http.Request, name string, data map[string]interface{}) error {

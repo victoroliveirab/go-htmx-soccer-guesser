@@ -24,6 +24,45 @@ type League struct {
 	Meta           string
 }
 
+type SQLLeagueSeason struct {
+	SQLLeague
+	RawStandings sql.NullString
+}
+
+type MatchesStatusGoals struct {
+	For     int
+	Against int
+}
+
+type MatchesStats struct {
+	Played int
+	Win    int
+	Draw   int
+	Lose   int
+	Goals  MatchesStatusGoals
+}
+
+type Standing struct {
+	Rank        int
+	TeamId      int
+	Team        Team
+	Points      int
+	GoalsDiff   int
+	Group       string
+	Form        string
+	Status      string
+	Description string
+	All         MatchesStats
+	Home        MatchesStats
+	Away        MatchesStats
+}
+
+type LeagueWithStandings struct {
+	League
+	Season    int
+	Standings []Standing
+}
+
 func FromSQLLeagueToLeague(sqlLeague *SQLLeague) *League {
 	var league League
 	league.Id = sqlLeague.Id

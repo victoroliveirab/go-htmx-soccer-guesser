@@ -1,0 +1,65 @@
+{{ define "children" }}
+<h1 class="text-xl text-center">Standings of {{.League.Name}}</h1>
+{{ if .StandingsAvailable }}
+<table class="w-full table-fixed">
+    <thead>
+        <tr>
+            <th>
+            </th>
+            <th>
+                <span class="hidden sm:inline-block">Team</span>
+            </th>
+            <th>
+                <span class="inline-block sm:hidden">P</span>
+                <span class="hidden sm:inline-block">Played</span>
+            </th>
+            <th>
+                <span class="inline-block sm:hidden">W</span>
+                <span class="hidden sm:inline-block">Wins</span>
+            </th>
+            <th>
+                <span class="inline-block sm:hidden">D</span>
+                <span class="hidden sm:inline-block">Draws</span>
+            </th>
+            <th>
+                <span class="inline-block sm:hidden">L</span>
+                <span class="hidden sm:inline-block">Losses</span>
+            </th>
+            <th>
+                <span class="inline-block sm:hidden">P</span>
+                <span class="hidden sm:inline-block">Points</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="border-black border-y w-full">
+        {{ range .Standings }}
+        <tr class="h-10 border-black border-y border-x">
+            <td class="w-6 text-right">
+                <span class="w-full inline-block">{{.Rank}}</span>
+            </td>
+            <td class="border-collapse flex items-center justify-center h-[inherit]">
+                <img src="{{.Team.LogoUrl}}" class="w-auto h-inherit max-h-6" />
+            </td>
+            <td class="border-black border-x text-center w-max">
+                <span class="inline-block">{{.All.Played}}</span>
+            </td>
+            <td class="border-black border-x text-center w-max">
+                <span class="inline-block">{{.All.Win}}</span>
+            </td>
+            <td class="border-black border-x text-center w-max">
+                <span class="inline-block">{{.All.Draw}}</span>
+            </td>
+            <td class="border-black border-x text-center w-max">
+                <span class="inline-block">{{.All.Lose}}</span>
+            </td>
+            <td class="border-black border-x text-center w-max">
+                <span class="inline-block">{{.Points}}</span>
+            </td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+{{ else }}
+<p>Not available</p>
+{{ end }}
+{{ end }}
