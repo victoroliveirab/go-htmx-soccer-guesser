@@ -103,7 +103,9 @@ for league_id, league_api_football_id, league_name, *_ in leagues_rows:
         headers=headers,
     )
     res = client.getresponse()
-    filename = os.path.join("json", f"standings-{league_name}-{str(NOW_TS)}.json")
+    filename = os.path.join(
+        "json", f"standings-{league_api_football_id}-{str(NOW_TS)}.json"
+    )
     with open(filename, "w", encoding="utf-8") as f:
         f.write(res.read().decode("utf-8"))
 
