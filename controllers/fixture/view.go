@@ -10,6 +10,8 @@ import (
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 )
 
+var partials = []string{"views/fixtures/_fixture-form.html", "views/fixtures/_fixture.html"}
+
 func getFixtureAndGuesses(fixtureId, userId int64) (*models.Fixture, []*models.Guess, error) {
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -86,7 +88,7 @@ var ViewFixture http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *h
 	}
 
 	if isModal {
-		lib.RenderPartial(w, "views/fixtures/_fixture.html", "fixture-information", data)
+		lib.RenderPartial(w, partials, "fixture-information", data)
 		return
 	}
 

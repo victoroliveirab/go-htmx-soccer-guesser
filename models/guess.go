@@ -49,9 +49,9 @@ const (
 )
 const (
 	QUERY_INSERT_GUESS = `
-        INSERT INTO Guesses Values(
-            group_id, fixture_id, locked, home_goals, away_goals
-        ) VALUES(?, ?, ?, ?, ?)
+        INSERT INTO Guesses(
+            group_id, fixture_id, user_id, locked, home_goals, away_goals
+        ) VALUES(?, ?, ?, ?, ?, ?)
     `
 )
 const (
@@ -94,23 +94,48 @@ func normalizeOutcome(outcome sql.NullInt64) string {
 	return constants.Outcome(outcome.Int64).String()
 }
 
-func GetGuessById(db *sql.DB, id int64) *Guess {
+func GetGuessById(db *sql.DB, id int64) (*Guess, error) {
 	var guess Guess
+	guess.Fixture = &Fixture{
+		HomeTeam: Team{},
+		AwayTeam: Team{},
+	}
+	var homeScore, awayScore sql.NullInt64
+	var homeWinner, awayWinner sql.NullInt64
 	var lockedInt int
 	var outcome sql.NullInt64
-	row := db.QueryRow("SELECT * FROM Guesses WHERE id = $1", id)
+	row := db.QueryRow(`
+        SELECT guess.id, guess.group_id, fixture.id, home.name, home.logo_url,
+        away.name, away.logo_url, fixture.home_score, fixture.away_score,
+        fixture.home_winner, fixture.away_winner, guess.locked, guess.home_goals,
+        guess.away_goals, guess.points, guess.created_at, guess.updated_at, guess.outcome
+        FROM Guesses guess
+        JOIN Fixtures fixture ON fixture.id = guess.fixture_id
+        JOIN Teams home ON fixture.home_team_id = home.id
+        JOIN Teams away ON fixture.away_team_id = away.id
+        WHERE guess.id = ?
+    `, id)
 	if err := row.Scan(
-		&guess.Id, &guess.UserId, &guess.GroupId, &lockedInt, &guess.HomeGoals,
-		&guess.AwayGoals, &guess.Points, &guess.CreatedAt, &guess.UpdatedAt,
-		&outcome,
+		&guess.Id, &guess.GroupId, &guess.Fixture.Id, &guess.Fixture.HomeTeam.Name,
+		&guess.Fixture.HomeTeam.LogoUrl, &guess.Fixture.AwayTeam.Name,
+		&guess.Fixture.AwayTeam.LogoUrl, &homeScore, &awayScore,
+		&homeWinner, &awayWinner, &lockedInt, &guess.HomeGoals, &guess.AwayGoals,
+		&guess.Points, &guess.CreatedAt, &guess.UpdatedAt, &outcome,
 	); err != nil {
-		return nil
+		return nil, err
+	}
+
+	if homeWinner.Int64 == 1 {
+		guess.Fixture.Winner = "Home"
+	}
+	if awayWinner.Int64 == 1 {
+		guess.Fixture.Winner = "Away"
 	}
 
 	guess.Locked = lockedInt == 1
 	guess.Outcome = normalizeOutcome(outcome)
 
-	return &guess
+	return &guess, nil
 }
 
 func GetPossibleGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error) {
@@ -217,13 +242,18 @@ func GetGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error
 }
 
 func SaveGuess(db *sql.DB, guess *SQLGuess) (int64, error) {
+	locked := 0
+	if guess.Locked {
+		locked = 1
+	}
 	row, err := db.Exec(
 		QUERY_INSERT_GUESS,
-		guess.GroupId, guess.FixtureId, 0, guess.HomeGoals, guess.AwayGoals,
+		guess.GroupId, guess.FixtureId, guess.UserId, locked, guess.HomeGoals,
+		guess.AwayGoals,
 	)
 
 	if err != nil {
-		return -1, nil
+		return -1, err
 	}
 
 	return row.LastInsertId()

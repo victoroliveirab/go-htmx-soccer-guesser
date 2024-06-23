@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/fixture"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/guess"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/league"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/user"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
@@ -52,6 +53,9 @@ func main() {
 	// Fixtures
 	mux.Handle("GET /fixtures/{id}", middlewares.WithAuth(fixture.ViewFixture))
 	mux.Handle("GET /fixtures", middlewares.WithAuth(fixture.FixturesByDate))
+
+	// Guesses
+	mux.Handle("POST /guesses", middlewares.WithAuth(guess.Create))
 
 	// Leagues
 	mux.Handle("GET /leagues/{id}", middlewares.WithAuth(league.ViewLeagueWithStandings))
