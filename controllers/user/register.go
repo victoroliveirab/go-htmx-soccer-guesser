@@ -6,9 +6,18 @@ import (
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/templates"
 )
 
-var Register http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var RegisterPage http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	tmpl := templates.LoadTemplate("signup", "signup.html")
+	data := map[string]interface{}{
+		"HideNav": true,
+	}
+	tmpl.Execute(w, r, data)
+})
+
+var RegisterPost http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)

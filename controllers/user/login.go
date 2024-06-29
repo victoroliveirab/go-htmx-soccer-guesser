@@ -8,9 +8,19 @@ import (
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/templates"
 )
 
-var Login http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var LoginPage http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	tmpl := templates.LoadTemplate("signin", "signin.html")
+	data := map[string]interface{}{
+		"HideNav": true,
+	}
+	tmpl.Execute(w, r, data)
+})
+
+// Receive a POST request and create a session for the user
+var LoginPost http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)

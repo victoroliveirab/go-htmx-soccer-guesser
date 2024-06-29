@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
-	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/serializers"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/templates"
 )
 
 const (
@@ -21,7 +21,9 @@ const (
     `
 )
 
+// Generate a view for a league (by id) with the standings of current season
 var ViewLeagueWithStandings http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	tmpl := templates.LoadTemplate("show-league", "leagues/show.html")
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -48,13 +50,13 @@ var ViewLeagueWithStandings http.Handler = http.HandlerFunc(func(w http.Response
 	}
 
 	if !rawStandings.Valid {
-		lib.RenderTemplate(w, r, "leagues/show.html", data)
+		tmpl.Execute(w, r, data)
 		return
 	}
 
 	standings, err := serializers.ParseStandings(rawStandings.String)
 	if err != nil {
-		lib.RenderTemplate(w, r, "leagues/show.html", data)
+		tmpl.Execute(w, r, data)
 		return
 	}
 
@@ -78,7 +80,7 @@ var ViewLeagueWithStandings http.Handler = http.HandlerFunc(func(w http.Response
 
 	rows, err := infra.Db.Query(query)
 	if err != nil {
-		lib.RenderTemplate(w, r, "leagues/show.html", data)
+		tmpl.Execute(w, r, data)
 		return
 	}
 	defer rows.Close()
@@ -87,7 +89,7 @@ var ViewLeagueWithStandings http.Handler = http.HandlerFunc(func(w http.Response
 		var team models.Team
 		err = rows.Scan(&team.Id, &team.Name, &team.LogoUrl)
 		if err != nil {
-			lib.RenderTemplate(w, r, "leagues/show.html", data)
+			tmpl.Execute(w, r, data)
 			return
 		}
 		teams = append(teams, &team)
@@ -100,5 +102,5 @@ var ViewLeagueWithStandings http.Handler = http.HandlerFunc(func(w http.Response
 	data["StandingsAvailable"] = true
 	data["Standings"] = standings
 
-	lib.RenderTemplate(w, r, "leagues/show.html", data)
+	tmpl.Execute(w, r, data)
 })

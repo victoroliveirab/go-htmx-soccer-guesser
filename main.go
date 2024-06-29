@@ -13,7 +13,6 @@ import (
 )
 
 func init() {
-	lib.RegisterTemplates()
 	infra.DbConnect("file:local.db")
 }
 

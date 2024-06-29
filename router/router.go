@@ -8,10 +8,9 @@ import (
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/guess"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/league"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/user"
-	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
-	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/router/middlewares"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/templates"
 )
 
 func New() http.Handler {
@@ -24,19 +23,21 @@ func New() http.Handler {
 
 	// Users
 
-	mux.Handle("GET /signin", middlewares.WithNoAuth(middlewares.WithTemplate("signin.html", map[string]interface{}{"HideNav": true})))
-	mux.Handle("POST /signin", middlewares.WithNoAuth(user.Login))
+	mux.Handle("GET /signin", middlewares.WithNoAuth(user.LoginPage))
+	mux.Handle("POST /signin", middlewares.WithNoAuth(user.LoginPost))
 
 	mux.Handle("GET /signout", middlewares.WithAuth(user.Logout))
 
-	mux.Handle("GET /signup", middlewares.WithNoAuth(middlewares.WithTemplate("signup.html", nil)))
+	templates.LoadTemplate("signup", "signup.html")
+	mux.Handle("GET /signup", middlewares.WithNoAuth(user.RegisterPage))
 
 	mux.Handle("GET /users/{id}", middlewares.WithAuth(user.Index))
 
-	mux.Handle("POST /users", middlewares.WithNoAuth(user.Register))
+	mux.Handle("POST /users", middlewares.WithNoAuth(user.RegisterPost))
 
 	// Fixtures
 	mux.Handle("GET /fixtures/{id}", middlewares.WithAuth(fixture.ViewFixture))
+	templates.LoadTemplate("fixtures", "fixtures/index.html")
 	mux.Handle("GET /fixtures", middlewares.WithAuth(fixture.FixturesByDate))
 
 	// Guesses
@@ -48,28 +49,20 @@ func New() http.Handler {
 	// Index
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		tmpl := templates.LoadTemplate("index", "index.html")
 		if r.URL.Path != "/" {
 			w.WriteHeader(404)
 			w.Write([]byte("Resource not found"))
 			return
 		}
 
-		teams, err := models.GetAllTeams(infra.Db)
-
-		if err != nil {
-			w.WriteHeader(500)
-			w.Write([]byte(err.Error()))
-			return
-		}
-
 		// Find a way to default HideNav to false (middleware?)
 		data := map[string]interface{}{
 			"Env":   "DEV",
-			"Teams": teams,
 			"Title": "Home",
 		}
 
-		lib.RenderTemplate(w, r, "index.html", data)
+		tmpl.Execute(w, r, data)
 	})
 
 	session := &lib.Session{

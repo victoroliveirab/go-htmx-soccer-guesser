@@ -21,26 +21,26 @@ var templFuncs template.FuncMap = template.FuncMap{
 	},
 }
 
-func LoadTemplate(name string, templatesList ...string) {
+func LoadTemplate(name string, templatesList ...string) *AppTemplate {
 	if templates == nil {
 		templates = make(map[string]*AppTemplate)
 	}
 	_, exists := templates[name]
-	if exists {
-		return
+	if !exists {
+		files := []string{config.TemplatesPath + "/base.html"}
+		for _, templName := range templatesList {
+			files = append(files, config.TemplatesPath+"/"+templName)
+		}
+		tmpl := template.New(name)
+		tmpl = tmpl.Funcs(templFuncs)
+		tmpl, _ = tmpl.ParseFiles(files...)
+		templates[name] = &AppTemplate{
+			name: name,
+			tmpl: tmpl,
+		}
 	}
 
-	files := []string{config.TemplatesPath + "/base.html"}
-	for _, templName := range templatesList {
-		files = append(files, config.TemplatesPath+"/"+templName)
-	}
-	tmpl := template.New(name)
-	tmpl = tmpl.Funcs(templFuncs)
-	tmpl, _ = tmpl.ParseFiles(files...)
-	templates[name] = &AppTemplate{
-		name: name,
-		tmpl: tmpl,
-	}
+	return GetTemplate(name)
 }
 
 func GetTemplate(name string) *AppTemplate {

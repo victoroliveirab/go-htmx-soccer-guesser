@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
-	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/templates"
 )
 
 var Index http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -28,5 +28,6 @@ var Index http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		"UserGroups": groups,
 	}
 
-	lib.RenderTemplate(w, r, "user/index.html", data)
+	tmpl := templates.LoadTemplate("show-user", "user/index.html")
+	tmpl.Execute(w, r, data)
 })

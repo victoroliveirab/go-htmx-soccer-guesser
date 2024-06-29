@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
-	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/templates"
 )
 
 type FixtureView struct {
@@ -56,7 +56,9 @@ func getQueriedDate(r *http.Request) time.Time {
 	return parsedDate.Truncate(24 * time.Hour)
 }
 
+// Show a list of fixtures by the day received, or for today as default
 var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	tmpl := templates.LoadTemplate("show-fixtures", "fixtures/index.html")
 	startOfDay := getQueriedDate(r)
 	endOfDay := time.Date(startOfDay.Year(), startOfDay.Month(), startOfDay.Day(), 23, 59, 59, int(time.Second-time.Nanosecond), time.UTC)
 
@@ -175,5 +177,5 @@ var FixturesByDate http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r
 	w.Header().Set("Cache-Control", cacheControlHeader)
 	w.Header().Set("Expires", expirationTime.Format(http.TimeFormat))
 
-	lib.RenderTemplate(w, r, "fixtures/index.html", data)
+	tmpl.Execute(w, r, data)
 })
