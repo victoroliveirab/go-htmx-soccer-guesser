@@ -14,11 +14,34 @@ type AppTemplate struct {
 }
 
 var templates map[string]*AppTemplate
+var partials map[string]*AppTemplate
 
 var templFuncs template.FuncMap = template.FuncMap{
 	"Mod": func(a, b int) int {
 		return a % b
 	},
+}
+
+func LoadPartial(name string, templatesList ...string) *AppTemplate {
+	if partials == nil {
+		partials = make(map[string]*AppTemplate)
+	}
+	_, exists := partials[name]
+	if !exists {
+		files := []string{config.TemplatesPath + "/base.html"}
+		for _, templName := range templatesList {
+			files = append(files, config.TemplatesPath+"/"+templName)
+		}
+		tmpl := template.New(name)
+		tmpl = tmpl.Funcs(templFuncs)
+		tmpl, _ = tmpl.ParseFiles(files...)
+		partials[name] = &AppTemplate{
+			name: name,
+			tmpl: tmpl,
+		}
+	}
+
+	return partials[name]
 }
 
 func LoadTemplate(name string, templatesList ...string) *AppTemplate {
@@ -68,6 +91,13 @@ func (t *AppTemplate) Execute(w http.ResponseWriter, r *http.Request, data map[s
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	t.tmpl.ExecuteTemplate(w, "base", data)
+
+	return nil
+}
+
+func (t *AppTemplate) ExecutePartial(w http.ResponseWriter, r *http.Request, block string, data interface{}) error {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	t.tmpl.ExecuteTemplate(w, block, data)
 
 	return nil
 }

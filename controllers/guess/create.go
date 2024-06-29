@@ -6,12 +6,13 @@ import (
 	"strconv"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/infra"
-	"github.com/victoroliveirab/go-htmx-soccer-guesser/lib"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/models"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/templates"
 )
 
+// Create a new guess entity and return the partial for the modal view
 var Create http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Create Guess")
+	tmpl := templates.LoadPartial("form-fixture", "fixtures/_fixture-form.html")
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -81,5 +82,5 @@ var Create http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	lib.RenderPartial(w, []string{"views/fixtures/_fixture-form.html"}, "fixture-form", guess)
+	tmpl.ExecutePartial(w, r, "fixture-form", guess)
 })
