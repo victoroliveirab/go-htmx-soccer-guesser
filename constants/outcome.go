@@ -15,7 +15,20 @@ const (
 	None
 )
 
-var OutcomesMap = map[Outcome]string{
+var OutcomesMap = map[string]Outcome{
+	"Perfect":               Perfect,
+	"Opposite":              Opposite,
+	"DiffPlusWinner":        DiffPlusWinner,
+	"DiffPlusOpposite":      DiffPlusOpposite,
+	"WinnerPlusWinnerGoals": WinnerPlusWinnerGoals,
+	"WinnerPlusLoserGoals":  WinnerPlusLoserGoals,
+	"Winner":                Winner,
+	"Draw":                  Draw,
+	"OneGoalButDraw":        OneGoalButDraw,
+	"None":                  None,
+}
+
+var OutcomesReverseMap = map[Outcome]string{
 	Perfect:               "Perfect",
 	Opposite:              "Opposite",
 	DiffPlusWinner:        "DiffPlusWinner",
@@ -29,7 +42,7 @@ var OutcomesMap = map[Outcome]string{
 }
 
 func (outcome Outcome) String() string {
-	str, exists := OutcomesMap[outcome]
+	str, exists := OutcomesReverseMap[outcome]
 	if !exists {
 		return None.String()
 	}

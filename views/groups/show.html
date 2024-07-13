@@ -1,0 +1,23 @@
+{{ define "children" }}
+<h1 class="text-xl">{{.Group.Name}}</h1>
+{{ if .RankingAvailable }}
+<table>
+    <thead>
+        <tr>
+            <th>Pos.</th>
+            <th>Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{ range $index, $entry := .Ranking }}
+        <tr>
+            <td>{{Pos $index}}</td>
+            <td>{{$entry.Name}}</td>
+            <td>{{$entry.Points}}</td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
+{{ end }}
+{{ end }}

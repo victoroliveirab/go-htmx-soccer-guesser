@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/fixture"
+	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/group"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/guess"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/league"
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/controllers/user"
@@ -34,6 +35,9 @@ func New() http.Handler {
 	mux.Handle("GET /users/{id}", middlewares.WithAuth(user.Index))
 
 	mux.Handle("POST /users", middlewares.WithNoAuth(user.RegisterPost))
+
+	// Groups
+	mux.Handle("GET /groups/{id}", middlewares.WithAuth(group.Show))
 
 	// Fixtures
 	mux.Handle("GET /fixtures/{id}", middlewares.WithAuth(fixture.ViewFixture))
