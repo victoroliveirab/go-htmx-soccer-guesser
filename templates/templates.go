@@ -1,8 +1,8 @@
 package templates
 
 import (
-	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/config"
@@ -39,6 +39,9 @@ func LoadPartial(name string, templatesList ...string) *AppTemplate {
 			name: name,
 			tmpl: tmpl,
 		}
+		log.Printf("loaded %s partial for the first time\n", name)
+		log.Println("templates list:")
+		log.Println(templatesList)
 	}
 
 	return partials[name]
@@ -61,6 +64,9 @@ func LoadTemplate(name string, templatesList ...string) *AppTemplate {
 			name: name,
 			tmpl: tmpl,
 		}
+		log.Printf("loaded %s template for the first time\n", name)
+		log.Println("templates list:")
+		log.Println(templatesList)
 	}
 
 	return GetTemplate(name)
@@ -86,8 +92,7 @@ func (t *AppTemplate) Execute(w http.ResponseWriter, r *http.Request, data map[s
 	data["UserID"] = ctx.Value("UserID")
 	data["CurrentPath"] = r.URL.Path
 
-	fmt.Println(data)
-	fmt.Println(t.name)
+	log.Printf("executing template %s\n", t.name)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	t.tmpl.ExecuteTemplate(w, "base", data)
@@ -96,6 +101,7 @@ func (t *AppTemplate) Execute(w http.ResponseWriter, r *http.Request, data map[s
 }
 
 func (t *AppTemplate) ExecutePartial(w http.ResponseWriter, r *http.Request, block string, data interface{}) error {
+	log.Printf("executing partial %s\n", t.name)
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	t.tmpl.ExecuteTemplate(w, block, data)
 
