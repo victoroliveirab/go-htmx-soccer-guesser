@@ -1,6 +1,7 @@
 package group
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -28,8 +29,8 @@ const GET_GROUP_PARTICIPANTS = `
 `
 
 type RankingEntry struct {
-	Name   string
 	Points int
+	User   *models.User
 }
 
 var Show http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -106,21 +107,24 @@ var Show http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 	ranking := make([]*RankingEntry, 0)
 
 	for _, entry := range orderedRanking {
-		userName := ""
+		var currentUser *models.User
 		for _, user := range group.Users {
 			if user.Id == entry.UserId {
-				userName = user.Name
+				currentUser = user
 				break
 			}
 		}
 		ranking = append(ranking, &RankingEntry{
-			Name:   userName,
 			Points: entry.Points,
+			User:   currentUser,
 		})
 	}
 
 	data["Ranking"] = ranking
 	data["RankingAvailable"] = true
+
+	fmt.Println(data)
+	fmt.Println("HEREHERHEHREHE")
 
 	tmpl.Execute(w, r, data)
 })

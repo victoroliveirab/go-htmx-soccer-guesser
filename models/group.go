@@ -2,8 +2,6 @@ package models
 
 import (
 	"database/sql"
-
-	"github.com/victoroliveirab/go-htmx-soccer-guesser/constants"
 )
 
 type Group struct {
@@ -21,7 +19,7 @@ type Group struct {
 
 type GroupWithParticipants struct {
 	Group
-	PointsTable map[string]constants.Outcome
+	PointsTable map[string]int
 	Users       []*User
 }
 

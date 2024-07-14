@@ -1,5 +1,7 @@
 package constants
 
+import "database/sql"
+
 type Outcome int
 
 const (
@@ -47,6 +49,13 @@ func (outcome Outcome) String() string {
 		return None.String()
 	}
 	return str
+}
+
+func NormalizeOutcome(outcome sql.NullInt64) string {
+	if !outcome.Valid {
+		return "N/A"
+	}
+	return Outcome(outcome.Int64).String()
 }
 
 var DefaultOutcomePointsMap = map[Outcome]int{

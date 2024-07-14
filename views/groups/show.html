@@ -1,23 +1,47 @@
 {{ define "children" }}
 <h1 class="text-xl">{{.Group.Name}}</h1>
 {{ if .RankingAvailable }}
-<table>
+<table class="border-collapse mx-auto w-full max-w-96">
     <thead>
-        <tr>
-            <th>Pos.</th>
-            <th>Name</th>
-            <th>Points</th>
+        <tr class="text-left">
+            <th scope="col" class="p-3 font-semibold text-sm">Pos.</th>
+            <th scope="col" class="p-3 font-semibold text-sm">Name</th>
+            <th scope="col" class="p-3 font-semibold text-sm">Points</th>
+            <th scope="col" class="p-3">&nbsp;</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="ranking-content" class="border-y border-gray-300">
         {{ range $index, $entry := .Ranking }}
         <tr>
-            <td>{{Pos $index}}</td>
-            <td>{{$entry.Name}}</td>
-            <td>{{$entry.Points}}</td>
+            <td class="p-3 font-medium text-gray-900">{{FormatPosition $index}}</td>
+            <td class="p-3 text-gray-500">{{$entry.User.Name}}</td>
+            <td class="p-3 text-gray-500">{{$entry.Points}}</td>
+            <td class="p-3 text-gray-500 text-right">
+                <input type="checkbox" name="toggle-content-{{$index}}" class="group"
+                    hx-trigger="change[rankingTableIsCheckboxOn.call(this)]"
+                    hx-get="/guesses/group/{{$.Group.Id}}/user/{{$entry.User.Id}}?partial=1" hx-swap="innerHTML"
+                    hx-target="#ranking-content-{{$index}}" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                <div id="ranking-content-wrapper-{{$index}}"
+                    class="max-h-0 overflow-y-hidden transition-all duration-500">
+                    <div id="ranking-content-{{$index}}" class="p-3">
+                        Loading content...
+                    </div>
+                </div>
+            </td>
         </tr>
         {{ end }}
     </tbody>
 </table>
 {{ end }}
+{{ if .PointsTableAvailable }}
+<p>Available</p>
+{{ end }}
+{{ end }}
+
+{{ define "scripts" }}
+<script defer async src="/static/js/groups/ranking-table.js"></script>
 {{ end }}

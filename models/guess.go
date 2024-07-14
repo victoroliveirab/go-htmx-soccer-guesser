@@ -19,6 +19,7 @@ type SQLGuess struct {
 	CreatedAt int
 	UpdatedAt int
 	Outcome   constants.Outcome
+	Counted   int
 }
 
 type Guess struct {
@@ -34,6 +35,7 @@ type Guess struct {
 	CreatedAt int
 	UpdatedAt int
 	Outcome   string
+	Counted   int
 }
 
 const (
@@ -87,13 +89,6 @@ const (
         `
 )
 
-func normalizeOutcome(outcome sql.NullInt64) string {
-	if !outcome.Valid {
-		return "N/A"
-	}
-	return constants.Outcome(outcome.Int64).String()
-}
-
 func GetGuessById(db *sql.DB, id int64) (*Guess, error) {
 	var guess Guess
 	guess.Fixture = &Fixture{
@@ -133,7 +128,7 @@ func GetGuessById(db *sql.DB, id int64) (*Guess, error) {
 	}
 
 	guess.Locked = lockedInt == 1
-	guess.Outcome = normalizeOutcome(outcome)
+	guess.Outcome = constants.NormalizeOutcome(outcome)
 
 	return &guess, nil
 }
@@ -188,7 +183,7 @@ func GetPossibleGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Gues
 		guess.Points = int(sqlPoints.Int64)
 		guess.CreatedAt = int(sqlCreatedAt.Int64)
 		guess.UpdatedAt = int(sqlUpdatedAt.Int64)
-		guess.Outcome = normalizeOutcome(outcome)
+		guess.Outcome = constants.NormalizeOutcome(outcome)
 
 		if homeWinner.Int64 == 1 {
 			guess.Fixture.Winner = "Home"
@@ -234,7 +229,7 @@ func GetGuessesByFixtureId(db *sql.DB, userId, fixtureId int64) ([]*Guess, error
 		}
 
 		guess.Locked = lockedInt == 1
-		guess.Outcome = normalizeOutcome(outcome)
+		guess.Outcome = constants.NormalizeOutcome(outcome)
 		guesses = append(guesses, &guess)
 	}
 

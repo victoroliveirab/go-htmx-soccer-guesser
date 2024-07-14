@@ -17,8 +17,11 @@ var templates map[string]*AppTemplate
 var partials map[string]*AppTemplate
 
 var templFuncs template.FuncMap = template.FuncMap{
-	"Pos": func(a int) int {
+	"FormatPosition": func(a int) int {
 		return a + 1
+	},
+	"Multiply": func(a, b int) int {
+		return a * b
 	},
 }
 

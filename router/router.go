@@ -46,6 +46,7 @@ func New() http.Handler {
 
 	// Guesses
 	mux.Handle("POST /guesses", middlewares.WithAuth(guess.Create))
+	mux.Handle("GET /guesses/group/{groupId}/user/{userId}", middlewares.WithAuth(guess.GetUserGuessesByGroup))
 
 	// Leagues
 	mux.Handle("GET /leagues/{id}", middlewares.WithAuth(league.ViewLeagueWithStandings))
