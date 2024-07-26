@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/victoroliveirab/go-htmx-soccer-guesser/config"
 )
@@ -17,6 +18,10 @@ var templates map[string]*AppTemplate
 var partials map[string]*AppTemplate
 
 var templFuncs template.FuncMap = template.FuncMap{
+	"FormatDate": func(a int) string {
+		t := time.Unix(int64(a), 0)
+		return t.Format("02/01 - 15:04")
+	},
 	"FormatPosition": func(a int) int {
 		return a + 1
 	},

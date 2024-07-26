@@ -38,7 +38,12 @@
         </div>
     </div>
     {{ if not .Locked }}
-    <div class="flex items-center justify-end">
+    <div class="flex items-center justify-between">
+        <div>
+            {{ if gt .UpdatedAt 0 }}
+            <p class="text-xs">Last update: {{FormatDate .UpdatedAt}}</p>
+            {{ end }}
+        </div>
         <button type="submit" class="text-xs p-1 bg-green-500">
             Submit
         </button>
