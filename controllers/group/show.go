@@ -1,7 +1,6 @@
 package group
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -122,9 +121,6 @@ var Show http.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 
 	data["Ranking"] = ranking
 	data["RankingAvailable"] = true
-
-	fmt.Println(data)
-	fmt.Println("HEREHERHEHREHE")
 
 	tmpl.Execute(w, r, data)
 })
