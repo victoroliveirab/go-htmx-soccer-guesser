@@ -1,5 +1,5 @@
 {{ block "fixture-form" . }}
-<form class="flex-1 flex flex-col gap-1 mb-0" {{ if eq .Id 0}}hx-post="/guesses" {{else}}hx-put="/guesses/{{.Id}}"
+<form class="flex-1 flex flex-col gap-1 mb-0" {{ if eq .Id 0}}hx-post="/guesses" {{else}}hx-patch="/guesses/{{.Id}}"
     {{end}} hx-swap="outerHTML">
     <input type="hidden" name="group-id" value="{{.GroupId}}" />
     <input type="hidden" name="fixture-id" value="{{.Fixture.Id}}" />
